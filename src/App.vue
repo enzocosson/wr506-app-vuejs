@@ -1,13 +1,14 @@
 <script setup>
 import { useRouter } from "vue-router";
 import HeaderComponant from "./components/HeaderComponant.vue";
-import CouvertureComponant from "./components/CouvertureComponant.vue";
+import HeaderLoginComponant from "./components/HeaderLoginComponant.vue";
 
 const router = useRouter();
 </script>
 
 <template>
-  <HeaderComponant />
+  <HeaderComponant v-if="router.currentRoute.value.path !== '/login'" />
+  <HeaderLoginComponant v-else />
   <router-view></router-view>
 </template>
 

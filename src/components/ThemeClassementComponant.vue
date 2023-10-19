@@ -5,13 +5,21 @@ import CardClassementMovieComponent from "./CardClassementMovieComponant.vue";
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
+
+// Récupérer le jeton d'authentification depuis le localstorage
+const token = localStorage.getItem('token');
+
 const fetchMovies = async () => {
   try {
-    const response = await axios.get(`${apiUrl}/movies`);
+    const response = await axios.get(`${apiUrl}/movies`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const movies = response.data["hydra:member"];
 
     // Obtenir les 4 premiers films
-    firstFourMovies.value = movies.slice(0, 30);
+    firstFourMovies.value = movies.slice(0, 10);
   } catch (error) {
     console.error("Erreur lors de la récupération des films :", error);
   }

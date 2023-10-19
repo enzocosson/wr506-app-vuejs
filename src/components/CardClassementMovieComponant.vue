@@ -3,11 +3,6 @@ export default {
   props: {
     movie: Object, // Remplacez Object par le type de données attendu pour la prop movie
   },
-
-  setup(props) {
-    // Vous pouvez accéder à la prop movie directement via props
-    console.log(props.movie);
-  },
 };
 </script>
 

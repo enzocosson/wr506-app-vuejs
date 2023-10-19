@@ -1,7 +1,6 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import HeaderComponant from "../components/HeaderComponant.vue";
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourActors = ref([]);
@@ -31,7 +30,6 @@ onMounted(() => {
 <template>
   <div class="home">
     <h1>Acteurs</h1>
-   <HeaderComponant />
 
     <div class="movies">
       <div class="card" v-for="actors in firstFourActors" :key="actors.title">

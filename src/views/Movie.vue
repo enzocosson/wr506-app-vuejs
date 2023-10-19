@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import HeaderComponant from "../components/HeaderComponant.vue";
+
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
@@ -17,7 +17,7 @@ const fetchMovies = async () => {
     const movies = response.data["hydra:member"];
 
     // Obtenir les 4 premiers films
-    firstFourMovies.value = movies.slice(0, 4);
+    firstFourMovies.value = movies.slice(0, 10);
   } catch (error) {
     console.error("Erreur lors de la récupération des films :", error);
   }

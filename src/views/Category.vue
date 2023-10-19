@@ -1,12 +1,10 @@
 <script setup>
-import HeaderComponant from "../components/HeaderComponant.vue";
   
 </script>
 
 <template>
   <div class="home">
     <h1>Category</h1>
-    <HeaderComponant />
   </div>
 </template>
 <style scoped lang="scss">

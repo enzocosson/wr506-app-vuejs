@@ -8,9 +8,16 @@ import CatalogeComponant from "../components/CatalogueComponant.vue";
 const apiUrl2 = "https://127.0.0.1:8000/api";
 const firstFourMovies2 = ref([]);
 
+// Récupérer le jeton d'authentification depuis le localstorage
+const token = localStorage.getItem('token');
+
 const fetchMovies2 = async () => {
   try {
-    const response2 = await axios.get(`${apiUrl2}/movies`);
+    const response2 = await axios.get(`${apiUrl2}/movies`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const movies2 = response2.data["hydra:member"];
 
     // Obtenir les 4 premiers films

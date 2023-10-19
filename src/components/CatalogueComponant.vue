@@ -9,6 +9,11 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
     <ThemeComponant />
     <ThemeClassementComponant />
     <ThemeComponant />
+    <ThemeComponant />
+    <ThemeComponant />
+    <ThemeComponant />
+    <ThemeComponant />
+    <ThemeComponant />
   </div>
 </template>
 

@@ -6,12 +6,15 @@ import CardMovieComponent from "./CardMovieComponant.vue";
 const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
-axios.defaults.headers.common["Authorization"] =
-  "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2OTc3MDI5MTMsImV4cCI6MTY5NzcwNjUxMywicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidXNlckBtYWlsLmNvbSJ9.WJblUtRUuTKvNt3vmaCqP1vsv7mt86mvHElMpqOv6Y9FjzTiZAuNjJea0D_WBSPXxUuMbeayscS5cJXtqPk07Kvc3s9oWJHbNRcnfS9sg69ef1Vu35ygIn5wMPLsGFoKHjXEXw6spI2WfPd8LR0wieawuqu-A4gQi-AnSTIjgz0Um4GdrFPekSiQ9FKRqOpTXbn-GMB3qixWFOpXeRXv0ffY88lX4Ho3RZvJeAg5WjaK0aaOr_ERModG4CgoqJEVch8_LEbrlzSrPtPKjeXWpALNgs-sBBSGzlSOnBoGLHt3t_s0VjLDnZfgtX5z_raV5zB4UWMtqvtxg36fCszcTw";
+const token = localStorage.getItem('token');
 
 const fetchMovies = async () => {
   try {
-    const response = await axios.get(`${apiUrl}/movies`);
+    const response = await axios.get(`${apiUrl}/movies`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const movies = response.data["hydra:member"];
 
     // Obtenir les 4 premiers films
@@ -24,6 +27,7 @@ const fetchMovies = async () => {
 onMounted(() => {
   fetchMovies();
 });
+
 
 // ----------------------------------------------------------
 

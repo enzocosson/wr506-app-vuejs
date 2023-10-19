@@ -1,11 +1,37 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+
+@font-face {
+  font-family: "NetflixSans";
+  src: url("/public/font/NetflixSans-Bold.otf") format("opentype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "NetflixSans";
+  src: url("/public/font/NetflixSans-Medium.otf") format("opentype");
+  font-weight: medium;
+}
+
+@font-face {
+  font-family: "NetflixSans";
+  src: url("/public/font/NetflixSans-Regular.otf") format("opentype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "NetflixSans";
+  src: url("/public/font/NetflixSans-Light.otf") format("opentype");
+  font-weight: light;
+}
+
 :root {
   //declare variable color
   --white: #f9f9f9;
   --black: #141414;
-  --blue: #1e90ff;
+  --blue: #0071eb;
+  --red-netflix: #e50815;
   --red: #ff2f2f;
-  --font: "Roboto", sans-serif;
+  --font: "NetflixSans", sans-serif;
 }
 
 * {

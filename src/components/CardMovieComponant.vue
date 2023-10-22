@@ -288,6 +288,8 @@ export default {
         width: 100%;
         display: flex;
         justify-content: flex-start;
+        flex-wrap: wrap;
+        row-gap: 5px;
         align-items: center;
 
         .recommandation {

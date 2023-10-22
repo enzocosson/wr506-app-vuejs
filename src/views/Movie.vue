@@ -2,18 +2,18 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "http://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
 // Récupérer le jeton d'authentification depuis le localstorage
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token");
 
 const fetchMovies = async () => {
   try {
     const response = await axios.get(`${apiUrl}/movies`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const movies = response.data["hydra:member"];
 

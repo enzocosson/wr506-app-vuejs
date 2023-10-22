@@ -3,17 +3,17 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "http://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token");
 
 const fetchMovies = async () => {
   try {
     const response = await axios.get(`${apiUrl}/movies`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const movies = response.data["hydra:member"];
 
@@ -27,7 +27,6 @@ const fetchMovies = async () => {
 onMounted(() => {
   fetchMovies();
 });
-
 
 // ----------------------------------------------------------
 

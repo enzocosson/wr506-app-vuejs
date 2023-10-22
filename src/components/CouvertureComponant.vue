@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "http://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
 const formatDate = (dateString) => {
@@ -27,55 +27,56 @@ onMounted(() => {
   fetchMovies();
 });
 
-
 const router = useRouter();
 </script>
 
 <template>
-  <div class="couverture" v-for="movie in firstFourMovies" :key="movie.title">
-    <div class="info">
-      <h3 class="title">{{ movie.title }}</h3>
-      <p class="description">
-        <span>Description: </span>{{ movie.description }}
-      </p>
-      <div class="buttons">
-        <button class="lecture">
-          <img class="icon" src="/icons/play.svg" alt="" />
-          Lecture
-        </button>
-        <button class="plus_info">
-          <svg
-            width="80"
-            height="80"
-            viewBox="0 0 80 80"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-          >
-            <path
-              d="M36 20H44V28H36V20ZM36 36H44V60H36V36ZM40 0C17.92 0 0 17.92 0 40C0 62.08 17.92 80 40 80C62.08 80 80 62.08 80 40C80 17.92 62.08 0 40 0ZM40 72C22.36 72 8 57.64 8 40C8 22.36 22.36 8 40 8C57.64 8 72 22.36 72 40C72 57.64 57.64 72 40 72Z"
-              fill="#fff"
-            />
-          </svg>
+  <div>
+    <div class="couverture" v-for="movie in firstFourMovies" :key="movie.title">
+      <div class="info">
+        <h3 class="title">{{ movie.title }}</h3>
+        <p class="description">
+          <span>Description: </span>{{ movie.description }}
+        </p>
+        <div class="buttons">
+          <button class="lecture">
+            <img class="icon" src="/icons/play.svg" alt="" />
+            Lecture
+          </button>
+          <button class="plus_info">
+            <svg
+              width="80"
+              height="80"
+              viewBox="0 0 80 80"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon"
+            >
+              <path
+                d="M36 20H44V28H36V20ZM36 36H44V60H36V36ZM40 0C17.92 0 0 17.92 0 40C0 62.08 17.92 80 40 80C62.08 80 80 62.08 80 40C80 17.92 62.08 0 40 0ZM40 72C22.36 72 8 57.64 8 40C8 22.36 22.36 8 40 8C57.64 8 72 22.36 72 40C72 57.64 57.64 72 40 72Z"
+                fill="#fff"
+              />
+            </svg>
 
-          Plus d'info
-        </button>
+            Plus d'info
+          </button>
+        </div>
       </div>
-    </div>
-    <img
-      class="img_couverture"
-      src="https://media.idownloadblog.com/wp-content/uploads/2014/12/interstellar-new-film-poster-art-nolan-9-wallpaper.jpg"
-      alt=""
-    />
-    <!-- <p><span>Catégorie: </span> {{ movie.category.name }}</p> -->
-    <!-- <p><span>Date de sortie: </span> {{ formatDate(movie.releaseDate) }}</p> -->
-    <!-- <p><span>Durée: </span> {{ movie.duration }} minutes</p> -->
-    <!-- <p><span>Acteurs: </span></p>
+      <img
+        class="img_couverture"
+        src="https://media.idownloadblog.com/wp-content/uploads/2014/12/interstellar-new-film-poster-art-nolan-9-wallpaper.jpg"
+        alt=""
+      />
+      <!-- <p><span>Catégorie: </span> {{ movie.category.name }}</p> -->
+      <!-- <p><span>Date de sortie: </span> {{ formatDate(movie.releaseDate) }}</p> -->
+      <!-- <p><span>Durée: </span> {{ movie.duration }} minutes</p> -->
+      <!-- <p><span>Acteurs: </span></p>
     <ul>
       <li v-for="actor in movie.actors" :key="actor">
         {{ actor.firstName }} {{ actor.lastName }}
       </li>
     </ul> -->
+    </div>
   </div>
 </template>
 

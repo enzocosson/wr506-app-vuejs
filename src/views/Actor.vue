@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "http://127.0.0.1:8000/api";
 const firstFourActors = ref([]);
 
 const formatDate = (dateString) => {
@@ -23,7 +23,7 @@ const fetchActor = async () => {
 };
 
 onMounted(() => {
-    fetchActor();
+  fetchActor();
 });
 </script>
 

@@ -20,7 +20,7 @@ const isTokenValid = () => {
 
 const login = async () => {
   try {
-    const response = await axios.post("https://127.0.0.1:8000/auth", {
+    const response = await axios.post("http://127.0.0.1:8000/auth", {
       email: mail.value,
       password: password.value,
     });
@@ -237,7 +237,7 @@ const login = async () => {
       }
     }
 
-    .captcha{
+    .captcha {
       width: 300px;
       text-align: left;
       color: #afafaf;

@@ -14,18 +14,18 @@ onMounted(() => {
 
 const isTokenValid = () => {
   if (localStorage.getItem("token")) {
-    router.push("/"); // Redirigez vers la page d'accueil si le token est valide
+    router.push("/"); 
   }
 };
 
 const login = async () => {
   try {
-    const response = await axios.post("http://127.0.0.1:8000/auth", {
+    const response = await axios.post("https://127.0.0.1:8000/auth", {
       email: mail.value,
       password: password.value,
     });
-    localStorage.setItem("token", response.data.token); // Stockez le token JWT dans localStorage
-    router.push("/"); // Redirigez vers la page d'accueil après la connexion réussie
+    localStorage.setItem("token", response.data.token); 
+    router.push("/"); 
   } catch (error) {
     console.error(error);
   }

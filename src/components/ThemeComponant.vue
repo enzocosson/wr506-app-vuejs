@@ -3,10 +3,13 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
 
-const apiUrl = "http://127.0.0.1:8000/api";
+const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
 const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "/login";
+}
 
 const fetchMovies = async () => {
   try {
@@ -20,13 +23,20 @@ const fetchMovies = async () => {
     // Obtenir les 4 premiers films
     firstFourMovies.value = movies.slice(0, 30);
   } catch (error) {
-    console.error("Erreur lors de la récupération des films :", error);
+    console.error("Error", error);
+    console.log(error.response.data.code);
+    if (error.response.data.code === 401) {
+      localStorage.removeItem("token");
+    }
+    this.$router.push("/login");
+    return;
   }
 };
 
 onMounted(() => {
   fetchMovies();
 });
+
 
 // ----------------------------------------------------------
 
@@ -37,7 +47,6 @@ const moveRight = () => {
   moviesLeft.value -= 92.5;
   showLeftButton = true;
   document.querySelector(".movies").classList.add("show-before");
-  console.log(showLeftButton);
 };
 
 const moveLeft = () => {
@@ -51,8 +60,10 @@ const moveLeft = () => {
     showLeftButton = true;
     document.querySelector(".movies").classList.add("show-before");
   }
-  console.log(showLeftButton);
 };
+
+
+
 </script>
 
 <template>
@@ -112,6 +123,7 @@ const moveLeft = () => {
           v-for="movie in firstFourMovies"
           :key="movie.title"
           :movie="movie"
+          @redirectToMoviePage="redirectToMoviePage"
         />
       </div>
     </div>
@@ -129,6 +141,11 @@ const moveLeft = () => {
   align-items: flex-start;
   gap: 10px;
   z-index: 1;
+
+  & > div:nth-child(2) > .slider__movies > div:nth-child(1) {
+    margin-left: 2.5vw !important; 
+  
+  }
 
   .container__title__presentation {
     display: flex;

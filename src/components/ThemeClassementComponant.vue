@@ -3,11 +3,14 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardClassementMovieComponent from "./CardClassementMovieComponant.vue";
 
-const apiUrl = "http://127.0.0.1:8000/api";
+const apiUrl = "https://127.0.0.1:8000/api";
 const firstFourMovies = ref([]);
 
 // Récupérer le jeton d'authentification depuis le localstorage
 const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "/login";
+}
 
 const fetchMovies = async () => {
   try {
@@ -38,7 +41,6 @@ const moveRight = () => {
   moviesLeft.value -= 92.5;
   showLeftButton = true;
   document.querySelector(".movies").classList.add("show-before");
-  console.log(showLeftButton);
 };
 
 const moveLeft = () => {
@@ -52,7 +54,6 @@ const moveLeft = () => {
     showLeftButton = true;
     document.querySelector(".movies").classList.add("show-before");
   }
-  console.log(showLeftButton);
 };
 </script>
 

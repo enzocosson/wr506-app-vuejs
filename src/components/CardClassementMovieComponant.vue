@@ -1,7 +1,7 @@
 <script>
 export default {
   props: {
-    movie: Object, // Remplacez Object par le type de données attendu pour la prop movie
+    movie: Object, 
   },
 };
 </script>

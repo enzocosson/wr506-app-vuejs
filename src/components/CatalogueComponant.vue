@@ -1,10 +1,13 @@
 <script setup>
 import ThemeComponant from "../components/ThemeComponant.vue";
 import ThemeClassementComponant from "../components/ThemeClassementComponant.vue";
+
 </script>
 
+
 <template>
-  <div class="catalogue">
+  <div class="container__catalogue">
+    <div class="catalogue">
     <ThemeComponant />
     <ThemeComponant />
     <ThemeClassementComponant />
@@ -15,17 +18,16 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
     <ThemeComponant />
     <ThemeComponant />
   </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.catalogue {
+.container__catalogue{
   position: absolute;
-  top: 0;
+  top: 65%;
   left: 0;
   width: 100%;
   height: auto;
-  padding-top: 75vh;
-  padding-bottom: 10vh;
   z-index: 15;
   overflow: hidden;
   display: flex;
@@ -34,6 +36,23 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
   align-items: center;
   gap: 4vh;
 
+
+  .catalogue {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  // padding-top: 75vh;
+  padding-bottom: 10vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4vh;
+  padding-top: 10vh;
+
   & > :first-child {
     z-index: 17;
   }
@@ -41,5 +60,6 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
   & > :nth-child(2) {
     z-index: 16;
   }
+}
 }
 </style>

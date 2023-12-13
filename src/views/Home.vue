@@ -2,13 +2,14 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import CatalogeComponant from "../components/CatalogueComponant.vue";
+import PopupInfo from "../components/PopupInfo.vue";
+import PopupEdit from "../components/PopupEdit.vue";
 
 // ----------------------------------------------------------
 
-const apiUrl2 = "http://127.0.0.1:8000/api";
+const apiUrl2 = "https://127.0.0.1:8000/api";
 const firstFourMovies2 = ref([]);
 
-// Récupérer le jeton d'authentification depuis le localstorage
 const token = localStorage.getItem("token");
 
 const fetchMovies2 = async () => {
@@ -20,7 +21,6 @@ const fetchMovies2 = async () => {
     });
     const movies2 = response2.data["hydra:member"];
 
-    // Obtenir les 4 premiers films
     firstFourMovies2.value = movies2.slice(0, 1);
   } catch (error) {
     console.error("Erreur lors de la récupération des films :", error);
@@ -35,6 +35,26 @@ const isSoundOn = ref(true);
 
 const toggleSound = () => {
   isSoundOn.value = !isSoundOn.value;
+};
+
+</script>
+
+<script>
+import { mapMutations, mapState } from "vuex";
+export default {
+  props: {
+    movie: Object,
+  },
+  computed: {
+    ...mapState(["isPopupOpen"]),
+  },
+  methods: {
+  ...mapMutations(["togglePopup"]),
+
+  handleClick() {
+    this.togglePopup();
+  },
+}
 };
 </script>
 
@@ -57,12 +77,12 @@ const toggleSound = () => {
         jusqu'à l'arrivée du Vautour qui lui donne l'occasion de faire ses
         preuves grâce à ses super-pouvoirs d'homme-araignée.
       </p>
-      <div class="buttons">
+      <div class="buttons" @click="redirectToMoviePage">
         <button class="lecture">
           <img class="icon" src="/icons/play.svg" alt="" />
           Lecture
         </button>
-        <button class="plus_info">
+        <button class="plus_info" @click="handleClick">
           <svg
             width="80"
             height="80"
@@ -124,8 +144,12 @@ const toggleSound = () => {
       <div class="rectangle">10+</div>
     </div>
   </div>
-  <!-- catalogue -->
 
+  <!-- pop up info -->
+  <PopupInfo />
+  <!-- pop up edit -->
+  <PopupEdit />
+  <!-- catalogue -->
   <CatalogeComponant />
 </template>
 

@@ -1,48 +1,43 @@
 <script>
+import { mapMutations, mapState } from "vuex";
 export default {
   props: {
     movie: Object,
   },
-  // setup(props) {
-  //   console.log(props.movie);
-  // },
-  // load iframe when i hover the class .card
-  methods: {
-    loadIframe() {
-      const iframe = this.$el.querySelector("iframe");
-      const src = iframe.dataset.src;
-      iframe.src = src;
-    },
-    unloadIframe() {
-      const iframe = this.$el.querySelector("iframe");
-      iframe.src = null;
-    },
+  computed: {
+    ...mapState(["isPopupOpen"]),
+    ...mapState(["isPopupEdit"]),
   },
+  methods: {
+  ...mapMutations(["togglePopup"]),
+  ...mapMutations(["togglePopupEdit"]),
+   redirectToMoviePage(event) {
+      if (event.target.tagName.toLowerCase() !== "button") {
+        this.$router.push({ name: "Watch", params: { id: this.movie.id } });
+      }
+    },
+  handleClick() {
+    this.togglePopup();
+  },
+  handleEdit() {
+      this.togglePopupEdit();
+    },
+}
 };
 </script>
 
+
 <template>
-  <div class="card" @mouseover="loadIframe" @mouseleave="unloadIframe">
+  <div class="card" @click="redirectToMoviePage">
     <img class="couverture__film" loading="lazy" :src="movie.poster" alt="" />
     <div class="card__hover">
       <div class="container__poster">
-        <!-- <img
+        <img
           class="couverture__film__hover"
           loading="lazy"
           :src="movie.poster"
           alt=""
-        /> -->
-        <iframe
-          width="560"
-          height="315"
-          :data-src="movie.trailer"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-          ref="iframe"
-          autoplay
-        ></iframe>
+        />
       </div>
       <div class="container__info">
         <div class="interaction">
@@ -100,8 +95,13 @@ export default {
                 ></path>
               </svg>
             </button>
+            <button @click.stop="handleEdit">
+              <svg width="50" height="50" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z" fill="#F9F9F9"/>
+              </svg>
+            </button>
           </div>
-          <button class="more__info">
+          <button class="more__info" @click.stop="handleClick">
             <svg
               width="142"
               height="142"
@@ -158,11 +158,10 @@ export default {
   &:hover {
     z-index: 12;
   }
-
-  &:first-child {
-    margin-left: 2.5vw;
-  }
-
+  
+  // &:first-child {
+  //   margin-left: 2.5vw;
+  // }
   .couverture__film {
     position: absolute;
     top: 0;

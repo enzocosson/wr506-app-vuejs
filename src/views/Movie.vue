@@ -3,7 +3,8 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue";
-// import PopupInfo from "../components/PopupInfo.vue";
+import PopupInfo from "../components/PopupInfo.vue";
+import PopupEdit from "../components/PopupEdit.vue";
 
 // ----------------------------------------------------------
 
@@ -127,6 +128,8 @@ const toggleSound = () => {
 
   <!-- pop up info -->
   <PopupInfo />
+    <!-- pop up edit -->
+  <PopupEdit />
   <!-- catalogue -->
   <CatalogeMoviesComponant />
 </template>

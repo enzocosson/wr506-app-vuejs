@@ -72,10 +72,13 @@ onMounted(() => {
       </svg>
     </button>
     <div class="container__info">
-      <img src="/images/img-couverture.webp" alt="" />
+      <div class="container__image">
+        <img src="/images/img-couverture.webp" alt="" />
+      </div>
       <div class="movie__details">
         <div class="principal">
           <div class="information">
+            <p class="titre">Spider-man</p>
             <p class="recommandation">Recommandé à 97%</p>
             <p class="date">2023</p>
             <p class="duree">60 min</p>
@@ -97,7 +100,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="container__modif"></div>
   </div>
 </template>
 
@@ -105,18 +107,16 @@ onMounted(() => {
 .screen__info {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 80%;
+  left: 0;
+  width: 100%;
   height: 100vh;
-  background-color: var(--black);
+  background-color: #000000a4;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   z-index: 999;
   opacity: 0;
   pointer-events: none;
-  transform: translateX(80%);
-  transition: transform 0.5s ease-in-out;
 
   .close__button {
     position: absolute;
@@ -135,16 +135,26 @@ onMounted(() => {
   }
 
   .container__info {
-    width: 50%;
-    height: 100%;
+    width: 800px;
+    height: 95vh;
+    background-color: var(--black);
+    border-radius: 10px;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
     flex-direction: column;
-    padding: 1rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    overflow: auto;
+
+    .container__image{
+      width: 100%;
+      height: 40%;
+      position: relative;
+    }
 
     img {
       width: 100%;
+      height: 100%;
       object-fit: cover;
     }
     .movie__details {
@@ -152,7 +162,7 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: 1rem 0rem;
+      padding: 2rem;
 
       .principal {
         width: 530px;
@@ -226,14 +236,6 @@ onMounted(() => {
         }
       }
     }
-  }
-
-  .container__modif {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 .popup__open {

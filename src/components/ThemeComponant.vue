@@ -123,7 +123,6 @@ const moveLeft = () => {
           v-for="movie in firstFourMovies"
           :key="movie.title"
           :movie="movie"
-          @redirectToMoviePage="redirectToMoviePage"
         />
       </div>
     </div>

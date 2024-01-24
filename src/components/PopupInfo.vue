@@ -43,13 +43,6 @@ onMounted(() => {
   fetchMovies();
 });
 
-const isSoundOn = ref(false);
-
-const toggleSound = () => {
-  isSoundOn.value = !isSoundOn.value;
-};
-
-
 </script>
 
 
@@ -143,7 +136,6 @@ const toggleSound = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  :class="{ 'sound-off': isSoundOn, 'sound-on': !isSoundOn }"
                   data-name="VolumeHigh"
                   aria-hidden="true"
                 >
@@ -161,7 +153,6 @@ const toggleSound = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  :class="{ 'sound-on': isSoundOn, 'sound-off': !isSoundOn }"
                   data-name="VolumeOff"
                   aria-hidden="true"
                 >

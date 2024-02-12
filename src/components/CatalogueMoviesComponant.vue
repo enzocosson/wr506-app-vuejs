@@ -2,6 +2,8 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
+import PopupInfo from "../components/PopupInfo.vue";
+import PopupEdit from "../components/PopupEdit.vue";
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const actors = ref([]);
@@ -75,7 +77,6 @@ const fetchCategories = async () => {
       },
     });
     categories.value = response.data;
-    console.log(categories);
   } catch (error) {
     console.error("Error fetching categories", error);
   }
@@ -90,7 +91,6 @@ const fetchActors = async () => {
       },
     });
     actors.value = response.data;
-    console.log(actors);
   } catch (error) {
     console.error("Error fetching actors", error);
   }
@@ -166,6 +166,7 @@ onMounted(() => {
       <div class="form-group">
         <label>Catégorie:</label>
         <select v-model="newMovie.category" required>
+          <option value="" disabled selected>Sélectionnez une catégorie</option>
           <option
             v-for="category in categories"
             :key="category.id"
@@ -232,6 +233,11 @@ onMounted(() => {
       <button type="submit">Ajouter</button>
     </form>
   </div>
+
+  <!-- pop up info -->
+  <PopupInfo />
+  <!-- pop up edit -->
+  <PopupEdit :movieData="movieData"/>
 </template>
 
 <style scoped lang="scss">

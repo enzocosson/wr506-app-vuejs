@@ -144,13 +144,13 @@ export default {
       <div class="rectangle">10+</div>
     </div>
   </div>
-
+  <!-- catalogue -->
+  <CatalogeComponant />
   <!-- pop up info -->
   <PopupInfo />
   <!-- pop up edit -->
   <PopupEdit />
-  <!-- catalogue -->
-  <CatalogeComponant />
+
 </template>
 
 <style scoped lang="scss">

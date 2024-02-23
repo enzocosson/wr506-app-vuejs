@@ -152,7 +152,7 @@ onMounted(() => {
     </div>
 
     <!-- pagination -->
-
+   
     <div class="pagination">
       <button @click="prevPage" :disabled="currentPage === 1">Précédent</button>
       <span>{{ currentPage }} / {{ totalPages }}</span>

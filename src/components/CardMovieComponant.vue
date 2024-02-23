@@ -24,38 +24,38 @@ export default {
       }
     },
     createMovieData(movie) {
-    return {
-      id: movie.id,
-      title: movie.title,
-      category: movie.category,
-      actors: movie.actors.map((actor) => {
-        return {
-          id: actor.id,
-          firstName: actor.firstName,
-          lastName: actor.lastName,
-        };
-      }),
-      date: movie.releaseDate,
-      duration: movie.duration,
-      description: movie.description,
-      poster: movie.poster,
-      posterPortrait: movie.posterPortrait,
-      classement: movie.classement,
-      trailer: movie.trailer,
-    };
-  },
-  handleClick() {
-    const movieData = this.createMovieData(this.movie);
-    this.clearDataMovieInfo();
-    this.addDataMovieInfo(movieData);
-    this.togglePopup();
-  },
-  handleEdit() {
-    const movieData = this.createMovieData(this.movie);
-    this.clearDataMovieEdit();
-    this.addDataMovieEdit(movieData);
-    this.togglePopupEdit();
-  },
+      return {
+        id: movie.id,
+        title: movie.title,
+        category: movie.category,
+        actors: movie.actors.map((actor) => {
+          return {
+            id: actor.id,
+            firstName: actor.firstName,
+            lastName: actor.lastName,
+          };
+        }),
+        date: movie.releaseDate,
+        duration: movie.duration,
+        description: movie.description,
+        poster: movie.poster,
+        posterPortrait: movie.posterPortrait,
+        classement: movie.classement,
+        trailer: movie.trailer,
+      };
+    },
+    handleClick() {
+      const movieData = this.createMovieData(this.movie);
+      this.clearDataMovieInfo();
+      this.addDataMovieInfo(movieData);
+      this.togglePopup();
+    },
+    handleEdit() {
+      const movieData = this.createMovieData(this.movie);
+      this.clearDataMovieEdit();
+      this.addDataMovieEdit(movieData);
+      this.togglePopupEdit();
+    },
   },
   mounted() {
     // console.log("Objet dataMovieEdit:", this.dataMovieEdit);
@@ -181,9 +181,9 @@ export default {
         </div>
         <div class="genre">
           {{
-          movie.actors.map((actor) => {
-            return actor.firstName;
-          }).join(', ')
+            movie.actors.map((actor) => {
+                return actor.firstName;
+              }).join(', ')
           }}
         </div>
       </div>

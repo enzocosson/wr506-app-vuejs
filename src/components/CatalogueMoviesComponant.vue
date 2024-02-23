@@ -7,7 +7,7 @@ import PopupEdit from "../components/PopupEdit.vue";
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const actors = ref([]);
-const firstFourMovies = ref([]);
+const moviesData = ref([]);
 const categories = ref([]);
 const newMovie = ref({
   category: "",
@@ -45,7 +45,7 @@ const fetchMovies = async () => {
     });
     const movies = response.data["hydra:member"];
     totalMovies.value = response.data["hydra:totalItems"];
-    firstFourMovies.value = movies;
+    moviesData.value = movies;
 
     // Calcul de totalPages après la récupération du nombre total de films
     totalPages.value = Math.ceil(totalMovies.value / moviesPerPage);
@@ -112,6 +112,10 @@ const addMovie = async () => {
   }
 };
 
+const handleDeleteMovie = (movieId) => {
+  deleteMovie(movieId);
+};
+
 const resetForm = () => {
   newMovie.value = {
     category: "",
@@ -144,19 +148,29 @@ onMounted(() => {
       </div>
       <div class="movies">
         <CardMovieComponent
-          v-for="movie in firstFourMovies"
+          v-for="movie in moviesData"
           :key="movie.title"
           :movie="movie"
+          @deleteMovie="handleDeleteMovie"
         />
       </div>
     </div>
 
     <!-- pagination -->
-   
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">Précédent</button>
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="pagination-button"
+      >
+        Précédent
+      </button>
       <span>{{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="pagination-button"
+      >
         Suivant
       </button>
     </div>
@@ -237,7 +251,7 @@ onMounted(() => {
   <!-- pop up info -->
   <PopupInfo />
   <!-- pop up edit -->
-  <PopupEdit :movieData="movieData"/>
+  <PopupEdit :movieData="movieData" />
 </template>
 
 <style scoped lang="scss">
@@ -256,6 +270,39 @@ onMounted(() => {
   justify-content: flex-start;
   align-items: center;
   gap: 4vh;
+
+  .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 50px;
+  color: white;
+  font-weight: bold;
+  gap: 10px;
+}
+
+.pagination-button {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  width: 150px;
+  height: 50px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #ff3f4d;
+  transform: scale(1.05);
+}
 
   .theme {
     width: 100%;

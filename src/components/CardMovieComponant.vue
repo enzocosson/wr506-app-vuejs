@@ -1,5 +1,6 @@
 <script>
 import { mapMutations, mapState } from "vuex";
+import axios from "axios";
 
 export default {
   props: {
@@ -9,6 +10,13 @@ export default {
   computed: {
     ...mapState(["isPopupOpen", "isPopupEdit", "dataMovieEdit"]),
   },
+
+  data() {
+    return {
+      showDeleteConfirmation: false,
+    };
+  },
+
   methods: {
     ...mapMutations([
       "togglePopup",
@@ -56,6 +64,40 @@ export default {
       this.addDataMovieEdit(movieData);
       this.togglePopupEdit();
     },
+    async confirmDeleteMovie() {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          console.error("Token is missing");
+          return;
+        }
+
+        const apiUrl = `https://127.0.0.1:8000/api/movies/${this.movie.id}`;
+
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+
+        await axios.delete(apiUrl, { headers });
+
+        console.log("Movie deleted successfully");
+        this.showDeleteConfirmation = false;
+        window.location.reload();
+
+        this.deleteMovie(this.movie.id);
+        this.closeDeleteConfirmation();
+      } catch (error) {
+        console.error("Error deleting movie:", error);
+      }
+    },
+    openDeleteConfirmation() {
+      this.showDeleteConfirmation = true;
+    },
+    closeDeleteConfirmation() {
+      this.showDeleteConfirmation = false;
+    },
   },
   mounted() {
     // console.log("Objet dataMovieEdit:", this.dataMovieEdit);
@@ -64,6 +106,17 @@ export default {
 </script>
 
 <template>
+  <div v-if="showDeleteConfirmation" class="popup-container">
+    <div class="popup">
+      <p class="popup-message">Voulez-vous vraiment supprimer ce film ?</p>
+      <div class="popup-buttons">
+        <button class="popup-button" @click="confirmDeleteMovie">Oui</button>
+        <button class="popup-button cancel" @click="closeDeleteConfirmation">
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
   <div class="card" @click="redirectToMoviePage">
     <img class="couverture__film" loading="lazy" :src="movie.poster" alt="" />
     <div class="card__hover">
@@ -95,7 +148,7 @@ export default {
                 ></path>
               </svg>
             </button>
-            <button>
+            <!-- <button>
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -130,7 +183,7 @@ export default {
                   fill="currentColor"
                 ></path>
               </svg>
-            </button>
+            </button> -->
             <button class="edit__button" @click.stop="handleEdit">
               <svg
                 width="50"
@@ -142,6 +195,20 @@ export default {
                 <path
                   d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z"
                   fill="#F9F9F9"
+                />
+              </svg>
+            </button>
+            <button class="edit__button" @click.stop="openDeleteConfirmation">
+              <svg
+                width="128"
+                height="146"
+                viewBox="0 0 128 146"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M54.4433 0C44.4621 0 36.2956 8.1665 36.2956 18.1478H18.1478C8.1665 18.1478 0 26.3143 0 36.2956H127.034C127.034 26.3143 118.868 18.1478 108.887 18.1478H90.7389C90.7389 8.1665 82.5724 0 72.5911 0H54.4433ZM18.1478 54.4433V141.734C18.1478 143.73 19.5996 145.182 21.5959 145.182H105.62C107.616 145.182 109.068 143.73 109.068 141.734V54.4433H90.9204V117.961C90.9204 123.042 86.9279 127.034 81.8465 127.034C76.7651 127.034 72.7726 123.042 72.7726 117.961V54.4433H54.6248V117.961C54.6248 123.042 50.6323 127.034 45.5509 127.034C40.4696 127.034 36.477 123.042 36.477 117.961V54.4433H18.3293H18.1478Z"
+                  fill="white"
                 />
               </svg>
             </button>
@@ -181,9 +248,11 @@ export default {
         </div>
         <div class="genre">
           {{
-            movie.actors.map((actor) => {
+            movie.actors
+              .map((actor) => {
                 return actor.firstName;
-              }).join(', ')
+              })
+              .join(", ")
           }}
         </div>
       </div>
@@ -192,6 +261,52 @@ export default {
 </template>
 
 <style scoped lang="scss">
+.popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.popup-message {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.popup-button {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.popup-button.cancel {
+  background-color: #555;
+}
 .card {
   cursor: pointer;
   position: relative;

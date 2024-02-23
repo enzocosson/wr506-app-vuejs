@@ -1,58 +1,41 @@
 <script>
 import { mapMutations, mapState } from "vuex";
-import axios from "axios";
-import { ref, onMounted } from "vue";
 
 export default {
-  props: {
-    movie: Object,
-  },
   computed: {
-    ...mapState(["isPopupOpen"]),
+    ...mapState(["isPopupOpen", "dataMovieInfo"]),
+    movieData() {
+      return this.dataMovieInfo.length > 0 ? this.dataMovieInfo[0] : null;
+    },
+  },
+  watch: {
+    isPopupOpen(newVal) {
+      if (newVal) {
+        console.log("Movie Data:", this.movieData);
+      }
+    },
   },
   methods: {
     ...mapMutations(["togglePopup"]),
     handleClick() {
       this.togglePopup();
-      console.log(this.isPopupOpen);
+    },
+    formatFrenchDate(dateString) {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat("fr-FR", options).format(date);
     },
   },
 };
-const apiUrl = "https://127.0.0.1:8000/api";
-const firstFourMovies = ref([]);
-
-const token = localStorage.getItem("token");
-
-const fetchMovies = async () => {
-  try {
-    const response = await axios.get(`${apiUrl}/movies`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const movies = response.data["hydra:member"];
-
-    // Obtenir les 4 premiers films
-    firstFourMovies.value = movies.slice(0, 30);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des films :", error);
-  }
-};
-
-onMounted(() => {
-  fetchMovies();
-});
-
 </script>
-
 
 <template>
   <div>
-    <div class="screen__info" :class="{ 'popup__open': isPopupOpen }">
+    <div class="screen__info" :class="{ popup__open: isPopupOpen }">
       <div class="container__info">
         <div class="scroll__container">
           <div class="couverture">
-            <button class="close__button" @click="handleClick">    
+            <button class="close__button" @click="handleClick">
               <svg
                 width="22"
                 height="22"
@@ -76,14 +59,10 @@ onMounted(() => {
                 ></path>
               </svg>
             </button>
-            <img
-              class="img__couverture"
-              src="https://occ-0-3052-56.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABaTH5Fbb203jYBUbirr4kJZFnzFX4lSg4QlcMUdgTDrbsXWRjaxTDGteRernx_YNmDkgDR2LvNBEibenDLBJKWWI8v8zgiSfr5kg.webp?r=8c5"
-              alt=""
-            />
+            <img class="img__couverture" v-if="movieData" :src="movieData.poster" alt="" />
 
             <div class="couverture__info">
-              <div class="title">TAPIE</div>
+              <div class="title" v-if="movieData">{{ movieData.title }}</div>
 
               <div class="interaction">
                 <button class="lecture">
@@ -169,34 +148,28 @@ onMounted(() => {
           <div class="movie__details">
             <div class="principal">
               <div class="information">
-                <p class="recommandation">Recommandé à 97%</p>
-                <p class="date">2023</p>
-                <p class="duree">60 min</p>
+                <p class="recommandation" v-if="movieData">
+                  Recommandé à {{ movieData.recommendation }}%
+                </p>
+                <p class="date" v-if="movieData">{{ formatFrenchDate(movieData.date) }}</p>
+                <p class="duree" v-if="movieData">{{ movieData.duration }} min</p>
                 <span class="resolution"> HD </span>
               </div>
               <p class="age">13+</p>
-              <p class="description">
-                Un homme ordinaire à l'ambition sans bornes devient l'une des
-                personnalités publiques les plus controversées de France, dans
-                ce biopic fictionnel sur Bernard Tapie.
-              </p>
+              <p class="description" v-if="movieData">{{ movieData.description }}</p>
             </div>
             <div class="secondaire">
-              <p>
-                <span>Distribution : </span>Laurent Lafitte, Joséphine Japy,
-                Patrick d'Assumçao
+              <p v-if="movieData">
+                <span>Distribution : </span>
+                {{
+                  movieData.actors
+                    .map((actor) => {
+                      return actor.firstName;
+                    })
+                    .join(", ")
+                }}
               </p>
-              <p><span>Genre : </span>Aventure, Action</p>
-            </div>
-          </div>
-          <div class="similaire">
-            <h2>Titres similaires</h2>
-            <div class="container__card">
-              <SimilaireCard
-                v-for="movie in firstFourMovies"
-                :key="movie.title"
-                :movie="movie"
-              />
+              <p v-if="movieData"><span>Genre : </span>{{ movieData.category.name }}</p>
             </div>
           </div>
         </div>
@@ -515,7 +488,7 @@ onMounted(() => {
     }
   }
 }
-.popup__open{
+.popup__open {
   opacity: 1;
   pointer-events: all;
 }

@@ -1,17 +1,17 @@
-
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue";
 import PopupInfo from "../components/PopupInfo.vue";
 import PopupEdit from "../components/PopupEdit.vue";
+import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue";
+
+
 
 // ----------------------------------------------------------
 
 const apiUrl2 = "https://127.0.0.1:8000/api";
 const firstFourMovies2 = ref([]);
 
-// Récupérer le jeton d'authentification depuis le localstorage
 const token = localStorage.getItem("token");
 
 const fetchMovies2 = async () => {
@@ -23,7 +23,6 @@ const fetchMovies2 = async () => {
     });
     const movies2 = response2.data["hydra:member"];
 
-    // Obtenir les 4 premiers films
     firstFourMovies2.value = movies2.slice(0, 1);
   } catch (error) {
     console.error("Erreur lors de la récupération des films :", error);
@@ -49,14 +48,17 @@ const toggleSound = () => {
       alt=""
     />
     <!-- video -->
-    <video autoplay muted loop class="ba_couverture">
+    <!-- <video autoplay muted loop class="ba_couverture">
       <source src="/videos/avatar-trailer.mp4" type="video/mp4" />
-    </video>
+    </video> -->
 
     <div class="info" v-for="movies2 in firstFourMovies2" :key="movies2.title">
       <h3 class="title">Avatar : La voie de l'eau</h3>
       <p class="description">
-        <span>Description: </span>Jake Sully et Ney'tiri ont formé une famille et font tout pour rester aussi soudés que possible. Ils sont cependant contraints de quitter leur foyer et d'explorer les différentes régions encore mystérieuses de Pandora.
+        <span>Description: </span>Jake Sully et Ney'tiri ont formé une famille
+        et font tout pour rester aussi soudés que possible. Ils sont cependant
+        contraints de quitter leur foyer et d'explorer les différentes régions
+        encore mystérieuses de Pandora.
       </p>
       <div class="buttons">
         <button class="lecture">
@@ -128,9 +130,7 @@ const toggleSound = () => {
 
   <!-- pop up info -->
   <PopupInfo />
-    <!-- pop up edit -->
   <PopupEdit />
-  <!-- catalogue -->
   <CatalogeMoviesComponant />
 </template>
 

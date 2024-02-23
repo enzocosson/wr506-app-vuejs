@@ -1,31 +1,67 @@
 <script>
 import { mapMutations, mapState } from "vuex";
+
 export default {
   props: {
     movie: Object,
   },
+
   computed: {
-    ...mapState(["isPopupOpen"]),
-    ...mapState(["isPopupEdit"]),
+    ...mapState(["isPopupOpen", "isPopupEdit", "dataMovieEdit"]),
   },
   methods: {
-  ...mapMutations(["togglePopup"]),
-  ...mapMutations(["togglePopupEdit"]),
-   redirectToMoviePage(event) {
+    ...mapMutations([
+      "togglePopup",
+      "clearDataMovieInfo",
+      "addDataMovieInfo",
+      "togglePopupEdit",
+      "clearDataMovieEdit",
+      "addDataMovieEdit",
+    ]),
+    redirectToMoviePage(event) {
       if (event.target.tagName.toLowerCase() !== "button") {
         this.$router.push({ name: "Watch", params: { id: this.movie.id } });
       }
     },
+    createMovieData(movie) {
+    return {
+      id: movie.id,
+      title: movie.title,
+      category: movie.category,
+      actors: movie.actors.map((actor) => {
+        return {
+          id: actor.id,
+          firstName: actor.firstName,
+          lastName: actor.lastName,
+        };
+      }),
+      date: movie.releaseDate,
+      duration: movie.duration,
+      description: movie.description,
+      poster: movie.poster,
+      posterPortrait: movie.posterPortrait,
+      classement: movie.classement,
+      trailer: movie.trailer,
+    };
+  },
   handleClick() {
+    const movieData = this.createMovieData(this.movie);
+    this.clearDataMovieInfo();
+    this.addDataMovieInfo(movieData);
     this.togglePopup();
   },
   handleEdit() {
-      this.togglePopupEdit();
-    },
-}
+    const movieData = this.createMovieData(this.movie);
+    this.clearDataMovieEdit();
+    this.addDataMovieEdit(movieData);
+    this.togglePopupEdit();
+  },
+  },
+  mounted() {
+    // console.log("Objet dataMovieEdit:", this.dataMovieEdit);
+  },
 };
 </script>
-
 
 <template>
   <div class="card" @click="redirectToMoviePage">
@@ -95,9 +131,18 @@ export default {
                 ></path>
               </svg>
             </button>
-            <button @click.stop="handleEdit">
-              <svg width="50" height="50" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <path d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z" fill="#F9F9F9"/>
+            <button class="edit__button" @click.stop="handleEdit">
+              <svg
+                width="50"
+                height="50"
+                viewBox="0 0 72 72"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z"
+                  fill="#F9F9F9"
+                />
               </svg>
             </button>
           </div>
@@ -128,8 +173,18 @@ export default {
           <p class="duree">{{ movie.duration }} min</p>
           <span class="resolution"> HD </span>
         </div>
+        <div class="title">
+          {{ movie.title }}
+        </div>
         <div class="genre">
           {{ movie.category.name }}
+        </div>
+        <div class="genre">
+          {{
+          movie.actors.map((actor) => {
+            return actor.firstName;
+          }).join(', ')
+          }}
         </div>
       </div>
     </div>
@@ -158,7 +213,7 @@ export default {
   &:hover {
     z-index: 12;
   }
-  
+
   // &:first-child {
   //   margin-left: 2.5vw;
   // }
@@ -315,6 +370,16 @@ export default {
           border: 0.5px solid grey;
           color: grey;
         }
+      }
+      .tilte {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.2rem;
+        font-size: 0.6vw;
+        color: var(--white);
+        font-weight: 100;
       }
       .genre {
         width: 100%;

@@ -329,9 +329,9 @@ export default {
     z-index: 12;
   }
 
-  &:first-child {
-    margin-left: 2.5vw;
-  }
+  // &:first-child {
+  //   margin-left: 2.5vw;
+  // }
   .couverture__film {
     position: absolute;
     top: 0;

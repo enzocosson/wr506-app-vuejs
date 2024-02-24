@@ -1,14 +1,12 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-// import PopupInfo from "../components/PopupInfo.vue";
-
-// ----------------------------------------------------------
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const actorsData = ref([]);
+const showDeleteConfirmation = ref(false);
+let actorToDelete = null;
 
-// Récupérer le jeton d'authentification depuis le localstorage
 const token = localStorage.getItem("token");
 
 const fetchActors = async () => {
@@ -20,9 +18,38 @@ const fetchActors = async () => {
     });
     const actor = response2.data["hydra:member"];
     actorsData.value = actor;
-    console.log(actorsData.value);
   } catch (error) {
-    console.error("Erreur lors de la récupération des films :", error);
+    console.error("Erreur lors de la récupération des acteurs :", error);
+  }
+};
+
+const openDeleteConfirmation = (actor) => {
+  actorToDelete = actor;
+  showDeleteConfirmation.value = true;
+};
+
+const closeDeleteConfirmation = () => {
+  showDeleteConfirmation.value = false;
+  actorToDelete = null;
+};
+
+const confirmDeleteActor = async () => {
+  try {
+    if (actorToDelete) {
+      const response = await axios.delete(`${apiUrl}/authors/${actorToDelete.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        fetchActors();
+      }
+    }
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'acteur :", error);
+  } finally {
+    closeDeleteConfirmation();
   }
 };
 
@@ -31,8 +58,23 @@ onMounted(() => {
 });
 </script>
 
+
 <template>
   <div class="actor">
+
+    <div v-if="showDeleteConfirmation" class="popup-container">
+    <div class="popup">
+      <p class="popup-message">Voulez-vous vraiment supprimer ce film ?</p>
+      <div class="popup-buttons">
+        <button class="popup-button" @click="confirmDeleteActor">Oui</button>
+        <button class="popup-button cancel" @click="closeDeleteConfirmation">
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+
+
     <div class="card__actor" v-for="actor in actorsData" :key="actor.id">
       <img :src="actor.photo" :alt="'photo de ' + actor.firstName" />
       <div class="info">
@@ -53,7 +95,7 @@ onMounted(() => {
           />
         </svg>
       </button>
-      <button class="edit__button" @click.stop="openDeleteConfirmation">
+      <button class="edit__button" @click.stop="openDeleteConfirmation(actor)">
         <svg
           width="128"
           height="146"
@@ -85,6 +127,54 @@ onMounted(() => {
   overflow: hidden;
   z-index: 1;
   padding: 6rem 2rem;
+
+
+  .popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.popup-message {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.popup-button {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.popup-button.cancel {
+  background-color: #555;
+}
 
   .card__actor {
     position: relative;

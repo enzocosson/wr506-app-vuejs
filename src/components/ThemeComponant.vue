@@ -209,6 +209,7 @@ const moveLeft = () => {
       align-items: center;
       transition: 0.5s ease-in-out;
       height: 8.5vw;
+      margin-left: 2.5vw;
     }
 
     &:before {

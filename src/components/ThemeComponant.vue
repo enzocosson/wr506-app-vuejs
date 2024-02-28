@@ -33,9 +33,25 @@ const fetchMovies = async () => {
   }
 };
 
+const deleteMovie = async (movieId) => {
+  try {
+    await axios.delete(`${apiUrl}/movies/${movieId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    fetchMovies();
+  } catch (error) {
+    console.error("Error deleting movie", error);
+  }
+};
+
 onMounted(() => {
   fetchMovies();
 });
+
+
 
 
 // ----------------------------------------------------------
@@ -123,6 +139,8 @@ const moveLeft = () => {
           v-for="movie in firstFourMovies"
           :key="movie.title"
           :movie="movie"
+          :fetchMovies="fetchMovies"
+          :deleteMovie="deleteMovie"
         />
       </div>
     </div>

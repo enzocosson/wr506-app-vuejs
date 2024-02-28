@@ -2,6 +2,8 @@
 import axios from "axios";
 import { ref, onMounted, watch } from "vue";
 import CardMovieComponent from "../components/CardMovieComponant.vue";
+import PopupInfo from "../components/PopupInfo.vue";
+import PopupEdit from "../components/PopupEdit.vue";
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const moviesPerPage = 30;
@@ -169,6 +171,10 @@ watch(selectedCategory, filterByCategoryRef);
       </button>
     </div>
   </div>
+  <!-- pop up info -->
+  <PopupInfo />
+  <!-- pop up edit -->
+  <PopupEdit :movieData="movieData" />
 </template>
 
 <style scoped lang="scss">

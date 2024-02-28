@@ -5,9 +5,13 @@ import { ref, onMounted, computed } from "vue";
 const apiUrl = "https://127.0.0.1:8000/api";
 const actorsData = ref([]);
 const showDeleteConfirmation = ref(false);
-const selectedActor = ref(false);
+const selectedActor = ref(null);
 let actorToDelete = null;
 const nationalitesTable = ref([]);
+const moviesTable = ref([]);
+const selectedFilm = ref(null);
+const selectedMovies = ref([]);
+
 
 const token = localStorage.getItem("token");
 
@@ -18,12 +22,23 @@ const fetchActors = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    const actor = response.data["hydra:member"];
-    actorsData.value = actor;
+    const actors = response.data["hydra:member"];
+    
+    actorsData.value = actors.map((actor) => {
+      return {
+        ...actor,
+        selectedMovies: actor.movies.map((movie) => ({
+          id: movie.id,
+          title: movie.title,
+        })),
+      };
+    });
   } catch (error) {
     console.error("Erreur lors de la récupération des acteurs :", error);
   }
 };
+
+
 
 const fetchMovies = async () => {
   try {
@@ -38,6 +53,15 @@ const fetchMovies = async () => {
     console.error("Error fetching movies:", error);
   }
 };
+
+const filteredMovies = computed(() => {
+  return moviesTable.value.filter(
+    (movie) =>
+      !selectedMovies.value.some(
+        (selectedMovie) => selectedMovie.id === movie.id
+      )
+  );
+});
 
 const fetchNationalites = async () => {
   try {
@@ -89,9 +113,6 @@ const confirmDeleteActor = async () => {
   }
 };
 
-const moviesTable = ref([]);
-const selectedMovies = ref([]);
-
 const handleEdit = async (actor) => {
   console.log("Actor:", actor);
 
@@ -116,15 +137,6 @@ const handleEdit = async (actor) => {
 const handleEditCancel = () => {
   selectedActor.value = false;
 };
-
-const filteredMovies = computed(() => {
-  return moviesTable.value.filter(
-    (movie) =>
-      !selectedMovies.value.some(
-        (selectedMovie) => selectedMovie.id === movie.id
-      )
-  );
-});
 
 const handleEditSubmit = async () => {
   try {
@@ -158,6 +170,21 @@ const handleEditSubmit = async () => {
   }
 };
 
+const addMovie = () => {
+  const selectedFilmValue = selectedFilm.value; 
+
+  if (selectedFilmValue) {
+    if (
+      !selectedMovies.value.some((movie) => movie.id === selectedFilmValue.id)
+    ) {
+      selectedMovies.value.push(selectedFilmValue);
+    }
+  }
+};
+
+const removeMovie = (index) => {
+  selectedMovies.value.splice(index, 1);
+};
 
 onMounted(() => {
   fetchMovies();
@@ -181,66 +208,87 @@ onMounted(() => {
     </div>
 
     <div v-if="selectedActor" class="popup-container">
-      <div class="popup">
-        <!-- Inside the popup div -->
-        <form @submit.prevent="handleEditSubmit">
-          <label for="editFirstName">Prénom:</label>
-          <input
-            v-model="selectedActor.firstName"
-            type="text"
-            id="editFirstName"
-          />
+      <div class="container__scroll">
+        <div class="popup">
+          <!-- Inside the popup div -->
+          <form>
+            <label for="editFirstName">Prénom:</label>
+            <input
+              v-model="selectedActor.firstName"
+              type="text"
+              id="editFirstName"
+            />
 
-          <label for="editLastName">Nom:</label>
-          <input
-            v-model="selectedActor.lastName"
-            type="text"
-            id="editLastName"
-          />
+            <label for="editLastName">Nom:</label>
+            <input
+              v-model="selectedActor.lastName"
+              type="text"
+              id="editLastName"
+            />
 
-          <!-- film section -->
-          <div v-if="selectedMovies.length > 0">
-            <label>Films sélectionnés :</label>
-            <div class="container__film">
-              <ul>
-                <li v-for="(movie, index) in selectedMovies" :key="index">
-                  {{ movie.title }}
-                  <button @click="removeMovie(index)">Supprimer</button>
-                </li>
-              </ul>
+            <!-- film section -->
+            <div class="container__actors__selection">
+              <div
+                class="container__actor__selected"
+                v-if="selectedMovies.length > 0"
+              >
+                <label>Films sélectionnés :</label>
+                <div class="container__film">
+                  <ul>
+                    <li v-for="movie in selectedMovies" :key="movie.id">
+                      {{ movie.title }}
+                      <button
+                        @click="removeMovie(selectedMovies.indexOf(movie))"
+                      >
+                        Supprimer
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="container__selection__actor">
+                <label for="selectFilm">Sélectionner un film :</label>
+                <select v-model="selectedFilm" id="selectFilm" class="category">
+                  <option
+                    v-for="film in filteredMovies"
+                    :key="film.id"
+                    :value="film"
+                  >
+                    {{ film.title }}
+                  </option>
+                </select>
+
+                <button @click.prevent="addMovie">Ajouter Film</button>
+              </div>
             </div>
-          </div>
 
-          <label for="selectFilm">Sélectionner un film :</label>
-          <select v-model="selectedFilm" id="selectFilm" class="category">
-            <option v-for="film in filteredMovies" :key="film.id" :value="film">
-              {{ film.title }}
-            </option>
-          </select>
+            <!-- film section -->
 
-          <button @click="addMovie">Ajouter Film</button>
+            <label for="editNationalite">Nationalité :</label>
+            <select v-model="selectedActor.nationalite" class="category">
+              <option
+                v-for="nationalite in nationalitesTable"
+                :key="nationalite.id"
+                :value="nationalite"
+              >
+                {{ nationalite.nationalite }}
+              </option>
+            </select>
 
-          <!-- film section -->
+            <label for="editPhoto">Photo:</label>
+            <input v-model="selectedActor.photo" type="text" id="editPhoto" />
 
-          <label for="editNationalite">Nationalité :</label>
-          <select v-model="selectedActor.nationalite" class="category">
-            <option
-              v-for="nationalite in nationalitesTable"
-              :key="nationalite.id"
-              :value="nationalite"
-            >
-              {{ nationalite.nationalite }}
-            </option>
-          </select>
-
-          <label for="editPhoto">Photo:</label>
-          <input v-model="selectedActor.photo" type="text" id="editPhoto" />
-
-          <button type="submit">Modifier</button>
-        </form>
-        <button class="popup-button cancel" @click="handleEditCancel">
-          Annuler
-        </button>
+            <div class="container__button">
+              <button class="cancel__button" @click.prevent="handleEditCancel">
+                Annuler
+              </button>
+              <button class="submit__button" @click.prevent="handleEditSubmit">
+                Modifier
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -313,86 +361,208 @@ onMounted(() => {
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-  }
 
-  .popup {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    position: relative;
+    .container__scroll {
+      width: 719px;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: auto;
+      border-radius: 0.5rem;
 
-    label {
-      display: block;
-      font-size: 1rem;
-      margin-top: 10px;
-    }
+      .popup {
+        width: 100%;
+        background: var(--black);
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        color: var(--white);
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    .container__film {
-      height: 300px;
-      width: 100%;
-      overflow: scroll;
-    }
-    ul {
-      width: 100%;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      color: var(--black);
-      li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        button {
+        label {
+          display: block;
+          font-size: 1rem;
+          margin-top: 10px;
+        }
+
+        input {
+          width: 100%;
           padding: 10px;
-          border: none;
+          margin: 5px 0;
+          border: 1px solid #ccc;
+          background-color: transparent;
           border-radius: 4px;
-          font-size: 16px;
-          background-color: #e50914;
+          box-sizing: border-box;
+          color: var(--white);
+        }
+        .container__film {
+          height: 300px;
+          width: 100%;
+          overflow: scroll;
+        }
+        ul {
+          width: 100%;
+          list-style: none;
+          padding: 0;
+          margin: 0;
           color: var(--black);
-          cursor: pointer;
-          transition: background-color 0.3s;
-          &:hover {
-            background-color: #bd081c;
+          li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: var(--white);
+            button {
+              padding: 10px;
+              border: none;
+              border-radius: 4px;
+              font-size: 16px;
+              background-color: #e50914;
+              color: var(--black);
+              cursor: pointer;
+              transition: background-color 0.3s;
+              &:hover {
+                background-color: #bd081c;
+              }
+            }
           }
+        }
+
+        button {
+          background-color: #e50914;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          margin-top: 20px;
+          cursor: pointer;
+          border-radius: 4px;
+          font-size: 1rem;
+          transition: background-color 0.3s;
+        }
+
+        .container__button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          margin-top: 2rem;
+          .cancel__button {
+            padding: 10px;
+            height: 50px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #9b9b9b;
+            color: var(--white);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            font-weight: bold;
+            &:hover {
+              background-color: rgb(100, 100, 100);
+            }
+          }
+          .submit__button {
+            padding: 10px;
+            height: 50px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #e50914;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            font-weight: bold;
+            &:hover {
+              background-color: #bd081c;
+            }
+          }
+        }
+
+        div {
+          margin-top: 10px;
         }
       }
     }
+  }
+  .container__actors__selection {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    justify-content: space-between;
 
+    .container__actor__selected {
+      width: 43%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+  }
+
+  .container__selection__actor {
+    width: 43%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 1rem;
+
+    label {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #fff;
+    }
     button {
-      background-color: #e50914;
-      color: white;
+      padding: 10px;
       border: none;
-      padding: 10px 20px;
-      margin-top: 20px;
-      cursor: pointer;
       border-radius: 4px;
-      font-size: 1rem;
+      font-size: 16px;
+      background-color: #33c56b;
+      color: #fff;
+      cursor: pointer;
       transition: background-color 0.3s;
+      width: 100%;
+      &:hover {
+        background-color: rgb(64, 154, 100);
+      }
     }
+  }
 
-    button.cancel {
-      background-color: #555;
+  .category {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--white);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: transparent;
+    color: var(--white);
+    outline: none;
+    &::placeholder {
+      color: var(--white);
     }
-
-    button:hover {
-      background-color: #ff3d2e;
+    &:focus {
+      border-color: #c55454;
     }
-
-    div {
-      margin-top: 10px;
+  }
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #b7b7b7;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: transparent;
+    color: var(--white);
+    outline: none;
+    &:focus {
+      border-color: #c55454;
     }
   }
   .popup-message {
@@ -448,7 +618,7 @@ onMounted(() => {
       opacity: 0.3;
       transition: 0.5s ease-in-out;
     }
-    .nationalite{
+    .nationalite {
       position: absolute;
       bottom: 0;
       left: 0;

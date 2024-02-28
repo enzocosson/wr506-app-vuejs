@@ -98,7 +98,7 @@ export default {
       const formattedDate = date.toISOString().slice(0, 10);
       return formattedDate;
     },
-    
+
     submitForm() {
       const movieId = this.formData.id;
       const actorUrls = this.formData.actors.map(
@@ -132,6 +132,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log("Requête PUT réussie:", data);
+          handleClick();
         })
         .catch((error) => {
           console.error("Erreur lors de la requête PUT:", error);
@@ -139,7 +140,11 @@ export default {
     },
     addActor() {
       if (this.selectedActor) {
-        if (!this.formData.actors.some(actor => actor.id === this.selectedActor.id)) {
+        if (
+          !this.formData.actors.some(
+            (actor) => actor.id === this.selectedActor.id
+          )
+        ) {
           this.formData.actors.push(this.selectedActor);
         }
       }
@@ -249,36 +254,57 @@ export default {
               placeholder="Duration (min)"
             />
 
-            <select v-model="formData.category" class="category">
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="category"
-              >
-                {{ category.name }}
-              </option>
-            </select>
-
-            <div v-if="formData.actors.length > 0">
-              <label>Acteurs :</label>
-              <ul>
-                <li v-for="(actor, index) in formData.actors" :key="index">
-                  {{ actor.firstName }}
-                  <button @click="removeActor(index)">Supprimer</button>
-                </li>
-              </ul>
+            <div class="container__category">
+              <label for="selectCategory">Catégorie :</label>
+              <select v-model="formData.category" class="category">
+                <option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category"
+                >
+                  {{ category.name }}
+                </option>
+              </select>
             </div>
 
-            <label for="selectActeur">Sélectionner un acteur :</label>
-            <select v-model="selectedActor" id="selectActeur" class="category">
-              <option v-for="actor in actors" :key="actor.id" :value="actor">
-                {{ actor.firstName }}
-              </option>
-            </select>
+            <div class="container__actors__selection">
+              <div
+                class="container__actor__selected"
+                v-if="formData.actors.length > 0"
+              >
+                <label>Acteurs sélectionnés :</label>
+                <ul>
+                  <li v-for="(actor, index) in formData.actors" :key="index">
+                    {{ actor.firstName }} {{ actor.lastName }}
+                    <button @click="removeActor(index)">Supprimer</button>
+                  </li>
+                </ul>
+              </div>
 
-            <button @click="addActor">Ajouter Acteur</button>
-
-            <button type="submit">Submit</button>
+              <div class="container__selection__actor">
+                <label for="selectActeur">Sélectionner un acteur :</label>
+                <select
+                  v-model="selectedActor"
+                  id="selectActeur"
+                  class="category"
+                >
+                  <option
+                    v-for="actor in actors"
+                    :key="actor.id"
+                    :value="actor"
+                  >
+                    {{ actor.firstName }}
+                  </option>
+                </select>
+                <button @click="addActor">Ajouter Acteur</button>
+              </div>
+            </div>
+            <div class="container__button">
+              <button class="cancel__button" type="button" @click="handleClick">
+                Annuler
+              </button>
+              <button class="submit__button" type="submit">Submit</button>
+            </div>
           </form>
         </div>
       </div>
@@ -293,17 +319,17 @@ export default {
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: #000000a4;
+  background-color: #0000006a;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-end;
   z-index: 999;
   opacity: 0;
   pointer-events: none;
 
   .container__info {
-    width: 930px;
-    height: 97vh;
+    width: 820px;
+    height: 86vh;
     background-color: var(--black);
     border-radius: 10px;
     display: flex;
@@ -323,7 +349,7 @@ export default {
       .couverture {
         position: relative;
         width: 100%;
-        height: 550px;
+        height: 307px;
         padding: 3rem;
 
         display: flex;
@@ -369,7 +395,7 @@ export default {
           z-index: 3;
 
           .title {
-            font-size: 9vw;
+            font-size: 3rem;
             font-weight: bold;
             color: var(--white);
           }
@@ -599,70 +625,133 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 600px;
+    gap: 20px;
+    width: 90%;
     margin: 0 auto;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-top: 5vh;
     margin-bottom: 10vh;
     input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 2px solid #b7b7b7;
       border-radius: 4px;
       font-size: 16px;
-      background-color: #fff;
-      color: #333;
+      background-color: transparent;
+      color: var(--white);
       outline: none;
       &:focus {
-        border-color: #54b9c5;
+        border-color: #c55454;
       }
     }
     label {
-      font-size: 14px;
+      font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 5px;
       color: #fff;
     }
+
+    .container__actors__selection {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      justify-content: space-between;
+
+      .container__actor__selected {
+        width: 43%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+    }
+
+    .container__selection__actor {
+      width: 43%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 1rem;
+
+      label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #fff;
+      }
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #33c56b;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+        &:hover {
+          background-color: rgb(64, 154, 100);
+        }
+      }
+    }
+    .container__category {
+      display: flex;
+      flex-direction: column;
+
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+      margin-top: 1rem;
+
+      label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #fff;
+      }
+    }
     .category {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--white);
       border-radius: 4px;
       font-size: 16px;
-      background-color: #fff;
-      color: #333;
+      background-color: transparent;
+      color: var(--white);
       outline: none;
       &::placeholder {
         color: #333;
       }
       &:focus {
-        border-color: #54b9c5;
+        border-color: #c55454;
       }
     }
     textarea {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 2px solid #b7b7b7;
       border-radius: 4px;
       font-size: 16px;
-      background-color: #fff;
-      color: #333;
+      background-color: transparent;
+      color: var(--white);
       outline: none;
       &:focus {
-        border-color: #54b9c5;
+        border-color: #c55454;
       }
     }
 
     ul {
-      width: 90%;
+      width: 100%;
       list-style: none;
       padding: 0;
       margin: 0;
       color: white;
+      background-color: rgb(31, 31, 31);
+      padding: 10px;
+      border-radius: 5px;
       li {
         display: flex;
         justify-content: space-between;
@@ -683,17 +772,45 @@ export default {
         }
       }
     }
-    button {
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      background-color: #54b9c5;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      &:hover {
-        background-color: #4da8b3;
+
+    .container__button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 2rem;
+      .cancel__button {
+        padding: 10px;
+        height: 50px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #9b9b9b;
+        color: var(--white);
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+        font-weight: bold;
+        &:hover {
+          background-color: rgb(100, 100, 100);
+        }
+      }
+      .submit__button {
+        padding: 10px;
+        height: 50px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #e50914;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+        font-weight: bold;
+        &:hover {
+          background-color: #bd081c;
+        }
       }
     }
   }

@@ -238,7 +238,7 @@ header {
 
     .menu__deroulant {
       opacity: 0;
-      pointer-events: all;
+      pointer-events: none;
       position: absolute;
       top: 150%;
       right: 0%;

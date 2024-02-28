@@ -84,7 +84,7 @@ const fetchCategories = async () => {
 
 const fetchActors = async () => {
   try {
-    const response = await axios.get(`${apiUrl}/authors`, {
+    const response = await axios.get(`${apiUrl}/actors`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -112,8 +112,18 @@ const addMovie = async () => {
   }
 };
 
-const handleDeleteMovie = (movieId) => {
-  deleteMovie(movieId);
+const deleteMovie = async (movieId) => {
+  try {
+    await axios.delete(`${apiUrl}/movies/${movieId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    fetchMovies();
+  } catch (error) {
+    console.error("Error deleting movie", error);
+  }
 };
 
 const resetForm = () => {
@@ -151,7 +161,8 @@ onMounted(() => {
           v-for="movie in moviesData"
           :key="movie.title"
           :movie="movie"
-          @deleteMovie="handleDeleteMovie"
+          :fetchMovies="fetchMovies"
+          :deleteMovie="deleteMovie"
         />
       </div>
     </div>
@@ -197,7 +208,7 @@ onMounted(() => {
           <option
             v-for="actor in actors"
             :key="actor.id"
-            :value="`/api/authors/${actor.id}`"
+            :value="`/api/actors/${actor.id}`"
           >
             {{ actor.firstName }}
           </option>

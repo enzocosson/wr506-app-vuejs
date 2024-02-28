@@ -3,9 +3,7 @@ import { mapMutations, mapState } from "vuex";
 import axios from "axios";
 
 export default {
-  props: {
-    movie: Object,
-  },
+  props: ["movie", "fetchMovies", "deleteMovie"],
 
   computed: {
     ...mapState(["isPopupOpen", "isPopupEdit", "dataMovieEdit"]),
@@ -18,6 +16,9 @@ export default {
   },
 
   methods: {
+    callFetchMovies() {
+      this.fetchMovies();
+    },
     ...mapMutations([
       "togglePopup",
       "clearDataMovieInfo",
@@ -65,33 +66,21 @@ export default {
       this.togglePopupEdit();
     },
     async confirmDeleteMovie() {
-      try {
-        const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-        if (!token) {
-          console.error("Token is missing");
-          return;
-        }
-
-        const apiUrl = `https://127.0.0.1:8000/api/movies/${this.movie.id}`;
-
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-
-        await axios.delete(apiUrl, { headers });
-
-        console.log("Movie deleted successfully");
-        this.showDeleteConfirmation = false;
-        window.location.reload();
-
-        this.deleteMovie(this.movie.id);
-        this.closeDeleteConfirmation();
-      } catch (error) {
-        console.error("Error deleting movie:", error);
+      if (!token) {
+        console.error("Token is missing");
+        return;
       }
-    },
+
+      await this.deleteMovie(this.movie.id);
+      this.closeDeleteConfirmation();
+    } catch (error) {
+      console.error("Error deleting movie", error);
+    }
+  },
+
     openDeleteConfirmation() {
       this.showDeleteConfirmation = true;
     },
@@ -99,9 +88,7 @@ export default {
       this.showDeleteConfirmation = false;
     },
   },
-  mounted() {
-    // console.log("Objet dataMovieEdit:", this.dataMovieEdit);
-  },
+  mounted() {},
 };
 </script>
 

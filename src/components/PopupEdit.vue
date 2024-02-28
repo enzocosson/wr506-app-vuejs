@@ -22,7 +22,7 @@ const fetchCategories = async () => {
 
 const fetchActors = async () => {
   try {
-    const response = await axios.get("https://127.0.0.1:8000/api/authors", {
+    const response = await axios.get("https://127.0.0.1:8000/api/actors", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -102,7 +102,7 @@ export default {
     submitForm() {
       const movieId = this.formData.id;
       const actorUrls = this.formData.actors.map(
-        (actor) => `/api/authors/${actor.id}`
+        (actor) => `/api/actors/${actor.id}`
       );
 
       const url = `https://127.0.0.1:8000/api/movies/${movieId}`;

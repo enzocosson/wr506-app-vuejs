@@ -276,7 +276,7 @@ export default {
                 <ul>
                   <li v-for="(actor, index) in formData.actors" :key="index">
                     {{ actor.firstName }} {{ actor.lastName }}
-                    <button @click="removeActor(index)">Supprimer</button>
+                    <button @click.prevent="removeActor(index)">Supprimer</button>
                   </li>
                 </ul>
               </div>
@@ -296,7 +296,7 @@ export default {
                     {{ actor.firstName }}
                   </option>
                 </select>
-                <button @click="addActor">Ajouter Acteur</button>
+                <button @click.prevent="addActor">Ajouter Acteur</button>
               </div>
             </div>
             <div class="container__button">

@@ -6,7 +6,7 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
 
 <template>
   <div class="movies">
-    <PopupInfo />
+    <!-- <PopupInfo /> -->
     <PopupEdit />
     <CatalogeMoviesComponant />
   </div>
@@ -20,7 +20,7 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
   padding-bottom: 1vh;
   overflow: hidden;

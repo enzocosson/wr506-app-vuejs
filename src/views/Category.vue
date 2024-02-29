@@ -1,6 +1,6 @@
 <script setup>
 import axios from "axios";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import CardMovieComponent from "../components/CardMovieComponant.vue";
 import PopupInfo from "../components/PopupInfo.vue";
 import PopupEdit from "../components/PopupEdit.vue";
@@ -112,9 +112,117 @@ onMounted(() => {
 });
 
 watch(selectedCategory, filterByCategoryRef);
+
+// ----------------------------------- popup creation category -----------------------------------
+
+const selectedFilm = ref(null);
+const isAddCategoryPopupOpen = ref(false);
+const selectedMovies = ref([]);
+
+const newCategoryData = ref({
+  name: "",
+  movies: [],
+});
+const openAddCategoryPopup = () => {
+  newCategoryData.value = {
+    name: "",
+    movies: [],
+  };
+  isAddCategoryPopupOpen.value = true;
+};
+
+const filteredMoviesList = computed(() => {
+  return moviesData.value.filter(
+    (movie) =>
+      !selectedMovies.value.some(
+        (selectedMovie) => selectedMovie.id === movie.id
+      )
+  );
+});
+
+const removeMovieFromSelection = (movie) => {
+  const index = newCategoryData.movies.indexOf(movie);
+  if (index !== -1) {
+    newCategoryData.movies.splice(index, 1);
+  }
+};
+
+const addMovieToSelection = () => {
+  if (selectedFilm.value) {
+    newCategoryData.value.movies.push(selectedFilm.value);
+    selectedFilm.value = null;
+  }
+};
+
+const submitCategoryForm = async () => {
+  try {
+    const requestData = {
+      name: newCategoryData.value.name,
+      movies: newCategoryData.value.movies.map(movie => `/api/movies/${movie.id}`)
+    };
+
+    await axios.post(`${apiUrl}/categories`, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error adding category", error);
+  }
+};
+
+
 </script>
 
 <template>
+  <div v-if="isAddCategoryPopupOpen" class="popup">
+    <div class="popup__content">
+      <h2>Ajouter une catégorie</h2>
+      <form @submit.prevent="submitCategoryForm">
+        <label for="categoryName">Nom de la catégorie:</label>
+        <input
+          v-model="newCategoryData.name"
+          type="text"
+          id="categoryName"
+          required
+        />
+
+        <div class="movies-selection">
+          <label for="selectedMovies">Films sélectionnés :</label>
+          <div class="selected-movies">
+            <ul>
+              <li v-for="movie in newCategoryData.movies" :key="movie.id">
+                {{ movie.title }}
+                <button @click="removeMovieFromSelection(movie)">
+                  Supprimer
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="movies-selection">
+          <label for="selectFilm">Sélectionner un film :</label>
+          <select v-model="selectedFilm" id="selectFilm">
+            <option
+              v-for="film in filteredMoviesList"
+              :key="film.id"
+              :value="film"
+            >
+              {{ film.title }}
+            </option>
+          </select>
+
+          <button @click.prevent="addMovieToSelection">Ajouter Film</button>
+        </div>
+
+        <button type="submit">Ajouter</button>
+      </form>
+      <button @click="isAddCategoryPopupOpen = false">Fermer</button>
+    </div>
+  </div>
+
   <div class="category">
     <div class="category__header">
       <div class="container__filtre__categories">
@@ -131,6 +239,9 @@ watch(selectedCategory, filterByCategoryRef);
             </option>
           </select>
         </div>
+        <button class="add__category" @click="openAddCategoryPopup">
+          Ajouter une catégorie
+        </button>
       </div>
 
       <div class="search-input">
@@ -178,6 +289,82 @@ watch(selectedCategory, filterByCategoryRef);
 </template>
 
 <style scoped lang="scss">
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  .popup__content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+
+    h2 {
+      font-size: 1.5em;
+      color: #e50914; // Rouge Netflix
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      label {
+        font-size: 1.2em;
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+      }
+
+      button {
+        background-color: #e50914;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.2em;
+
+        &:hover {
+          background-color: #ff3b2f; // Rouge plus clair au survol
+        }
+      }
+    }
+
+    button {
+      background-color: transparent;
+      color: #333;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 10px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
 .category {
   position: relative;
   width: 100%;
@@ -208,6 +395,22 @@ watch(selectedCategory, filterByCategoryRef);
       justify-content: flex-start;
       align-items: center;
       gap: 20px;
+
+      .add__category {
+        padding: 10px;
+        background-color: #e50914;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #bd081c;
+        }
+      }
     }
 
     .custom-select {
@@ -222,7 +425,6 @@ watch(selectedCategory, filterByCategoryRef);
       -moz-appearance: none;
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #fff;
       font-size: 16px;

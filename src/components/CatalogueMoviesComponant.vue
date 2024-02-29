@@ -9,6 +9,8 @@ const apiUrl = "https://127.0.0.1:8000/api";
 const actors = ref([]);
 const moviesData = ref([]);
 const categories = ref([]);
+const filteredMovies = ref([]);
+const searchQuery = ref("");
 const newMovie = ref({
   category: "",
   actors: [],
@@ -47,11 +49,22 @@ const fetchMovies = async () => {
     totalMovies.value = response.data["hydra:totalItems"];
     moviesData.value = movies;
 
-    // Calcul de totalPages après la récupération du nombre total de films
+
     totalPages.value = Math.ceil(totalMovies.value / moviesPerPage);
+
+    filterByTitle();
   } catch (error) {
-    // Gestion des erreurs
+    
   }
+};
+
+
+const filterByTitle = () => {
+  console.log("Search Query:", searchQuery.value);
+  filteredMovies.value = moviesData.value.filter((movie) =>
+    movie.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+  console.log("Filtered Movies:", filteredMovies.value);
 };
 
 const nextPage = () => {
@@ -145,20 +158,25 @@ onMounted(() => {
   fetchMovies();
   fetchCategories();
   fetchActors();
+  filterByTitle();
 });
 </script>
 
 <template>
   <div class="catalogue">
     <div class="theme">
-      <div class="container__title__presentation">
-        <a class="explorer" href="#"
-          >Tout explorer <img src="/icons/arrow-explorer.svg" alt=""
-        /></a>
+      <div class="category__header">
+        <div class="search-input">
+          <input
+            v-model="searchQuery"
+            @input="filterByTitle"
+            placeholder="Rechercher par titre"
+          />
+        </div>
       </div>
       <div class="movies">
         <CardMovieComponent
-          v-for="movie in moviesData"
+          v-for="movie in filteredMovies"
           :key="movie.title"
           :movie="movie"
           :fetchMovies="fetchMovies"
@@ -267,12 +285,10 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .catalogue {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   height: auto;
-  padding-top: 75vh;
+  padding-top: 7vh;
   padding-bottom: 10vh;
   z-index: 15;
   overflow: hidden;
@@ -283,37 +299,37 @@ onMounted(() => {
   gap: 4vh;
 
   .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 40px 50px;
-  color: white;
-  font-weight: bold;
-  gap: 10px;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 50px;
+    color: white;
+    font-weight: bold;
+    gap: 10px;
+  }
 
-.pagination-button {
-  background-color: #e50914;
-  color: white;
-  border: none;
-  width: 150px;
-  height: 50px;
-  margin: 0 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
+  .pagination-button {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    width: 150px;
+    height: 50px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
 
-.pagination-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
+  .pagination-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 
-.pagination-button:hover:not(:disabled) {
-  background-color: #ff3f4d;
-  transform: scale(1.05);
-}
+  .pagination-button:hover:not(:disabled) {
+    background-color: #ff3f4d;
+    transform: scale(1.05);
+  }
 
   .theme {
     width: 100%;
@@ -323,8 +339,104 @@ onMounted(() => {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 10px;
+    gap: 4vh;
     z-index: 1;
+
+    .category__header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      color: var(--white);
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+
+      .container__filtre__categories {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+
+        .add__category {
+          padding: 10px;
+          background-color: #e50914;
+          color: #fff;
+          font-size: 16px;
+          font-weight: bold;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: #bd081c;
+          }
+        }
+      }
+
+      .custom-select {
+        position: relative;
+        display: inline-block;
+        width: 200px;
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 16px;
+        color: #333;
+        cursor: pointer;
+        outline: none;
+      }
+
+      select:focus {
+        border-color: #0071eb;
+      }
+
+      .custom-select::after {
+        content: "\25BC";
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+
+      select option {
+        background-color: #fff;
+        color: #333;
+      }
+
+      .search-input {
+        width: 300px;
+      }
+
+      .search-input input {
+        padding: 10px;
+        border: 1px solid #333;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+      }
+
+      .search-input input::placeholder {
+        color: #ccc;
+      }
+
+      .search-input input:focus {
+        border-color: #e50914;
+        box-shadow: 0 0 5px rgba(229, 9, 20, 0.7);
+      }
+    }
 
     .container__title__presentation {
       display: flex;
@@ -360,7 +472,7 @@ onMounted(() => {
       height: auto;
       color: var(--black);
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: flex-end;
       flex-wrap: wrap;
       gap: 10px;

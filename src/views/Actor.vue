@@ -18,6 +18,8 @@ const currentPage = ref(1);
 const itemsPerPage = 30;
 const totalActors = ref([]);
 const totalPages = computed(() => Math.ceil(totalActors.value / itemsPerPage));
+const searchQuery = ref("");
+const filteredActors = ref([]);
 
 //----------------------------- popup ajout acteur -----------------------------------
 const isAddCategoryPopupOpen = ref(false);
@@ -52,12 +54,18 @@ const fetchActors = async () => {
       };
     });
 
-    console.log("Total actors:", totalActors.value);
-    console.log(totalPages.value);
+    filterByTitle();
   } catch (error) {
     console.error("Erreur lors de la récupération des acteurs :", error);
   }
 };
+
+const filterByTitle = () => {
+  filteredActors.value = actorsData.value.filter((actor) =>
+    actor.firstName.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+};
+
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -274,6 +282,7 @@ onMounted(() => {
   fetchMovies();
   fetchActors();
   fetchNationalites();
+  filterByTitle();
 });
 </script>
 
@@ -437,43 +446,55 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="card__actor" v-for="actor in actorsData" :key="actor.id">
-      <img :src="actor.photo" :alt="'photo de ' + actor.firstName" />
-      <div class="info">
-        <h2>{{ actor.firstName }} {{ actor.lastName }}</h2>
-        <p class="nationalite">{{ actor.nationalite.nationalite }}</p>
-        <div class="container__button__info">
-          <button class="edit__button" @click.stop="handleEdit(actor)">
-            <svg
-              width="50"
-              height="50"
-              viewBox="0 0 72 72"
-              fill="var(--black)"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z"
+    <div class="category__header">
+      <div class="search-input">
+        <input
+          v-model="searchQuery"
+          @input="filterByTitle"
+          placeholder="Rechercher par nom"
+        />
+      </div>
+    </div>
+
+    <div class="container__card">
+      <div class="card__actor" v-for="actor in filteredActors" :key="actor.id">
+        <img :src="actor.photo" :alt="'photo de ' + actor.firstName" />
+        <div class="info">
+          <h2>{{ actor.firstName }} {{ actor.lastName }}</h2>
+          <p class="nationalite">{{ actor.nationalite.nationalite }}</p>
+          <div class="container__button__info">
+            <button class="edit__button" @click.stop="handleEdit(actor)">
+              <svg
+                width="50"
+                height="50"
+                viewBox="0 0 72 72"
                 fill="var(--black)"
-              />
-            </svg>
-          </button>
-          <button
-            class="edit__button"
-            @click.stop="openDeleteConfirmation(actor)"
-          >
-            <svg
-              width="128"
-              height="146"
-              viewBox="0 0 128 146"
-              fill="var(--black)"
-              xmlns="http://www.w3.org/2000/svg"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 57V72H15L59.24 27.76L44.24 12.76L0 57ZM70.84 16.16C72.4 14.6 72.4 12.08 70.84 10.52L61.48 1.15999C59.92 -0.40001 57.4 -0.40001 55.84 1.15999L48.52 8.47999L63.52 23.48L70.84 16.16Z"
+                  fill="var(--black)"
+                />
+              </svg>
+            </button>
+            <button
+              class="edit__button"
+              @click.stop="openDeleteConfirmation(actor)"
             >
-              <path
-                d="M54.4433 0C44.4621 0 36.2956 8.1665 36.2956 18.1478H18.1478C8.1665 18.1478 0 26.3143 0 36.2956H127.034C127.034 26.3143 118.868 18.1478 108.887 18.1478H90.7389C90.7389 8.1665 82.5724 0 72.5911 0H54.4433ZM18.1478 54.4433V141.734C18.1478 143.73 19.5996 145.182 21.5959 145.182H105.62C107.616 145.182 109.068 143.73 109.068 141.734V54.4433H90.9204V117.961C90.9204 123.042 86.9279 127.034 81.8465 127.034C76.7651 127.034 72.7726 123.042 72.7726 117.961V54.4433H54.6248V117.961C54.6248 123.042 50.6323 127.034 45.5509 127.034C40.4696 127.034 36.477 123.042 36.477 117.961V54.4433H18.3293H18.1478Z"
+              <svg
+                width="128"
+                height="146"
+                viewBox="0 0 128 146"
                 fill="var(--black)"
-              />
-            </svg>
-          </button>
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M54.4433 0C44.4621 0 36.2956 8.1665 36.2956 18.1478H18.1478C8.1665 18.1478 0 26.3143 0 36.2956H127.034C127.034 26.3143 118.868 18.1478 108.887 18.1478H90.7389C90.7389 8.1665 82.5724 0 72.5911 0H54.4433ZM18.1478 54.4433V141.734C18.1478 143.73 19.5996 145.182 21.5959 145.182H105.62C107.616 145.182 109.068 143.73 109.068 141.734V54.4433H90.9204V117.961C90.9204 123.042 86.9279 127.034 81.8465 127.034C76.7651 127.034 72.7726 123.042 72.7726 117.961V54.4433H54.6248V117.961C54.6248 123.042 50.6323 127.034 45.5509 127.034C40.4696 127.034 36.477 123.042 36.477 117.961V54.4433H18.3293H18.1478Z"
+                  fill="var(--black)"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -588,7 +609,7 @@ onMounted(() => {
       }
     }
 
-    .movies-selection{
+    .movies-selection {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -609,17 +630,14 @@ onMounted(() => {
         border-radius: 4px;
         font-size: 1em;
       }
-
-    
-    
     }
-    .category{
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1em;
-      }
+    .category {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
   }
 }
 .actor {
@@ -633,7 +651,7 @@ onMounted(() => {
   padding-bottom: 1vh;
   overflow: hidden;
   z-index: 2;
-  padding: 2rem 6rem;
+  padding: 2rem 3rem;
   padding-top: 6rem;
   gap: 4vh;
 
@@ -1019,109 +1037,213 @@ onMounted(() => {
   .popup-button.cancel {
     background-color: #555;
   }
-
-  .card__actor {
-    position: relative;
-    width: 15.2vw;
-    height: 24vw;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
-    cursor: pointer;
-    padding: 2rem;
-    margin: 0.5rem 0;
+  .category__header {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    border: 2px solid var(--white);
-    transition: transform 0.3s cubic-bezier(0.42, 0, 0, 1.61),
-    z-index 0s cubic-bezier(0.95, -0.01, 0.58, 1) 0.5s;
-    box-shadow: rgba(0, 0, 0, 0) 0px 3px 8px;
-    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    color: var(--white);
+    font-size: 1.5rem;
 
-    .info {
-      position: absolute;
-      bottom: 0%;
-      left: 0;
-      height: 35%;
-      width: 100%;
+    .container__filtre__categories {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 1rem 1rem;
-      gap: 5px;
-      opacity: 1;
-      transition: 0.5s ease-in-out;
-      background-color: var(--white);
-      overflow: hidden;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
 
-      h2 {
-        color: #bd081c;
-        font-size: 1.2vw;
-        text-align: center;
-      }
+      .add__category {
+        padding: 10px;
+        background-color: #e50914;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
 
-      .container__button__info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        button {
-          width: 2.3vw;
-          height: 2.3vw;
-          background-color: transparent;
-          border: 1.5px solid var(--black);
-          color: var(--black);
-          cursor: pointer;
-          transition: color 0.3s;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          transition: 0.2s ease-in-out;
-
-          svg {
-            width: 40%;
-            height: 40%;
-          }
-
-          &:hover {
-            background-color: rgba(255, 255, 255, 0.126);
-            border: 1.5px solid var(--black);
-          }
+        &:hover {
+          background-color: #bd081c;
         }
       }
     }
-    .nationalite {
-      color: var(--black);
-      font-size: 0.8vw;
-      border-radius: 0px 5px 0px 0px;
+
+    .custom-select {
+      position: relative;
+      display: inline-block;
+      width: 200px;
     }
 
-    img {
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #fff;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: #0071eb;
+    }
+
+    .custom-select::after {
+      content: "\25BC";
       position: absolute;
       top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.3;
-      transition: 0.2s ease-in-out;
+      right: 10px;
+      transform: translateY(-50%);
+      pointer-events: none;
     }
 
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    select option {
+      background-color: #fff;
+      color: #333;
+    }
+
+    .search-input {
+      width: 300px;
+    }
+
+    .search-input input {
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+
+    .search-input input::placeholder {
+      color: #ccc;
+    }
+
+    .search-input input:focus {
+      border-color: #e50914;
+      box-shadow: 0 0 5px rgba(229, 9, 20, 0.7);
+    }
+  }
+  .container__card {
+    position: relative;
+    width: 100%;
+    height: auto;
+    color: var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 15px;
+    .card__actor {
+      position: relative;
+      width: 15.2vw;
+      height: 24vw;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+      cursor: pointer;
+      padding: 2rem;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
       border: 2px solid var(--white);
-    }
-    &:hover img {
-      opacity: 1;
-    }
-    &:hover .info {
-      opacity: 1;
+      transition: transform 0.3s cubic-bezier(0.42, 0, 0, 1.61),
+        z-index 0s cubic-bezier(0.95, -0.01, 0.58, 1) 0.5s;
+      box-shadow: rgba(0, 0, 0, 0) 0px 3px 8px;
+      overflow: hidden;
+
+      .info {
+        position: absolute;
+        bottom: 0%;
+        left: 0;
+        height: 35%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 1rem 1rem;
+        gap: 5px;
+        opacity: 1;
+        transition: 0.5s ease-in-out;
+        background-color: var(--white);
+        overflow: hidden;
+
+        h2 {
+          color: #bd081c;
+          font-size: 1.2vw;
+          text-align: center;
+        }
+
+        .container__button__info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          button {
+            width: 2.3vw;
+            height: 2.3vw;
+            background-color: transparent;
+            border: 1.5px solid var(--black);
+            color: var(--black);
+            cursor: pointer;
+            transition: color 0.3s;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s ease-in-out;
+
+            svg {
+              width: 40%;
+              height: 40%;
+            }
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.126);
+              border: 1.5px solid var(--black);
+            }
+          }
+        }
+      }
+      .nationalite {
+        color: var(--black);
+        font-size: 0.8vw;
+        border-radius: 0px 5px 0px 0px;
+      }
+
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.3;
+        transition: 0.2s ease-in-out;
+      }
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        border: 2px solid var(--white);
+      }
+      &:hover img {
+        opacity: 1;
+      }
+      &:hover .info {
+        opacity: 1;
+      }
     }
   }
 }

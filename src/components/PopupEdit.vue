@@ -131,9 +131,10 @@ export default {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Requête PUT réussie:", data);
-          handleClick();
+          console.log("Success:", data);
+          this.togglePopupEdit();
         })
+        
         .catch((error) => {
           console.error("Erreur lors de la requête PUT:", error);
         });

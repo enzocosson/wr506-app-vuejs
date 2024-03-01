@@ -169,6 +169,8 @@ const submitCategoryForm = async () => {
         "Content-Type": "application/json",
       },
     });
+    fetchCategories();
+    fetchMovies();
     isAddCategoryPopupOpen.value = false;
   } catch (error) {
     console.error("Error adding category", error);
@@ -190,16 +192,17 @@ const confirmDeleteCategory = async () => {
   try {
     const categoryId = selectedCategoryId.value;
 
-    const response = await axios.get(`${apiUrl}/movies`, {
-      params: {
-        categoryId: categoryId,
-      },
+    const responseAllMovies = await axios.get(`${apiUrl}/movies`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const moviesInCategory = response.data["hydra:member"];
+    const allMovies = responseAllMovies.data["hydra:member"];
+
+    const moviesInCategory = allMovies.filter(
+      (movie) => movie.category.id === categoryId
+    );
 
     if (moviesInCategory.length > 0) {
       alert(
@@ -289,10 +292,10 @@ const cancelDeleteCategory = () => {
         </div>
 
         <div class="container__button">
-          <button class="submit" type="submit">Ajouter</button>
           <button class="close" @click.prevent="isAddCategoryPopupOpen = false">
             Fermer
           </button>
+          <button class="submit" type="submit">Ajouter</button>
         </div>
       </form>
     </div>
@@ -503,7 +506,6 @@ const cancelDeleteCategory = () => {
     align-items: center;
     gap: 15px;
     color: var(--white);
-    margin-bottom: 10px;
     font-size: 1.5rem;
 
     .container__filtre__categories {

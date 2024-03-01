@@ -65,11 +65,9 @@ const fetchMovies = async () => {
 };
 
 const filterByTitle = () => {
-  console.log("Search Query:", searchQuery.value);
   filteredMovies.value = moviesData.value.filter((movie) =>
     movie.title.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
-  console.log("Filtered Movies:", filteredMovies.value);
 };
 
 const nextPage = () => {
@@ -244,15 +242,10 @@ onMounted(() => {
         </div>
 
         <div class="container__button">
-          <button
-            class="cancel__button"
-            @click.prevent="closeAddCategoryPopup"
-          >
+          <button class="cancel__button" @click.prevent="closeAddCategoryPopup">
             Annuler
           </button>
-          <button class="submit__button" type="submit">
-            Modifier
-          </button>
+          <button class="submit__button" type="submit">Modifier</button>
         </div>
       </form>
     </div>
@@ -411,45 +404,45 @@ onMounted(() => {
       }
 
       .container__button {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 2rem;
+        .cancel__button {
+          padding: 10px;
+          height: 50px;
+          border: none;
+          border-radius: 4px;
+          font-size: 16px;
+          background-color: #9b9b9b;
+          color: var(--white);
+          cursor: pointer;
+          transition: background-color 0.3s;
           width: 100%;
-          margin-top: 2rem;
-          .cancel__button {
-            padding: 10px;
-            height: 50px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: #9b9b9b;
-            color: var(--white);
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            font-weight: bold;
-            &:hover {
-              background-color: rgb(100, 100, 100);
-            }
-          }
-          .submit__button {
-            padding: 10px;
-            height: 50px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: #e50914;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            font-weight: bold;
-            &:hover {
-              background-color: #bd081c;
-            }
+          font-weight: bold;
+          &:hover {
+            background-color: rgb(100, 100, 100);
           }
         }
+        .submit__button {
+          padding: 10px;
+          height: 50px;
+          border: none;
+          border-radius: 4px;
+          font-size: 16px;
+          background-color: #e50914;
+          color: #fff;
+          cursor: pointer;
+          transition: background-color 0.3s;
+          width: 100%;
+          font-weight: bold;
+          &:hover {
+            background-color: #bd081c;
+          }
+        }
+      }
     }
 
     h2 {
@@ -511,8 +504,8 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: auto;
-  padding-top: 7vh;
-  padding-bottom: 10vh;
+  padding: 2rem 3rem;
+  padding-top: 6rem;
   z-index: 15;
   overflow: hidden;
   display: flex;
@@ -557,7 +550,7 @@ onMounted(() => {
   .theme {
     width: 100%;
     height: auto;
-    padding: 1rem 0;
+    padding: 0rem 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -572,7 +565,6 @@ onMounted(() => {
       align-items: center;
       gap: 15px;
       color: var(--white);
-      margin-bottom: 10px;
       font-size: 1.5rem;
 
       .container__filtre__categories {

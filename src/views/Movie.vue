@@ -21,11 +21,9 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 20px;
   padding-bottom: 1vh;
   overflow: hidden;
   z-index: 1;
-  padding: 0 2rem;
 
   .mute__button {
     position: absolute;

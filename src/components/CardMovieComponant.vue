@@ -34,7 +34,7 @@ export default {
     ]),
     redirectToMoviePage(event) {
       if (event.target.tagName.toLowerCase() !== "button") {
-        this.$router.push({ name: "Watch", params: { id: this.movie.id } });
+        this.$router.push({ name: "MovieInformation", params: { id: this.movie.id } });
       }
     },
     createMovieData(movie) {
@@ -266,8 +266,6 @@ export default {
 .card {
   cursor: pointer;
   position: relative;
-  display: flex;
-  flex-direction: column;
   width: 15vw;
   height: 8.5vw;
   box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.084);

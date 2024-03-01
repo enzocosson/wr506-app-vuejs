@@ -158,7 +158,9 @@ const submitCategoryForm = async () => {
   try {
     const requestData = {
       name: newCategoryData.value.name,
-      movies: newCategoryData.value.movies.map(movie => `/api/movies/${movie.id}`)
+      movies: newCategoryData.value.movies.map(
+        (movie) => `/api/movies/${movie.id}`
+      ),
     };
 
     await axios.post(`${apiUrl}/categories`, requestData, {
@@ -167,15 +169,86 @@ const submitCategoryForm = async () => {
         "Content-Type": "application/json",
       },
     });
+    fetchCategories();
+    fetchMovies();
+    isAddCategoryPopupOpen.value = false;
   } catch (error) {
     console.error("Error adding category", error);
   }
 };
 
+// -------------------- supprimer categorie ----------------------------
 
+const selectedCategoryId = ref(null);
+
+const isDeleteCategoryPopupOpen = ref(false);
+
+const openDeleteCategoryPopup = (categoryId) => {
+  selectedCategoryId.value = categoryId;
+  isDeleteCategoryPopupOpen.value = true;
+};
+
+const confirmDeleteCategory = async () => {
+  try {
+    const categoryId = selectedCategoryId.value;
+
+    const responseAllMovies = await axios.get(`${apiUrl}/movies`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const allMovies = responseAllMovies.data["hydra:member"];
+
+    const moviesInCategory = allMovies.filter(
+      (movie) => movie.category.id === categoryId
+    );
+
+    if (moviesInCategory.length > 0) {
+      alert(
+        "La catégorie est toujours associée à des films. Supprimez d'abord les films pour pouvoir supprimer la catégorie."
+      );
+    } else {
+      await axios.delete(`${apiUrl}/categories/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchCategories();
+      isDeleteCategoryPopupOpen.value = false;
+    }
+  } catch (error) {
+    console.error("Error deleting category", error);
+  }
+};
+
+const cancelDeleteCategory = () => {
+  isDeleteCategoryPopupOpen.value = false;
+};
 </script>
 
 <template>
+  <div v-if="isDeleteCategoryPopupOpen" class="popup">
+    <div class="popup__content">
+      <h2>Supprimer une catégorie</h2>
+      <p>Sélectionnez la catégorie à supprimer :</p>
+      <select v-model="selectedCategoryId">
+        <option
+          v-for="category in categories"
+          :key="category.id"
+          :value="category.id"
+        >
+          {{ category.name }}
+        </option>
+      </select>
+      <div class="container__button">
+        <button class="submit" @click="confirmDeleteCategory">Confirmer</button>
+        <button class="close" @click="cancelDeleteCategory">Annuler</button>
+      </div>
+    </div>
+  </div>
+
   <div v-if="isAddCategoryPopupOpen" class="popup">
     <div class="popup__content">
       <h2>Ajouter une catégorie</h2>
@@ -213,13 +286,18 @@ const submitCategoryForm = async () => {
               {{ film.title }}
             </option>
           </select>
-
-          <button @click.prevent="addMovieToSelection">Ajouter Film</button>
+          <button class="ajouter__film" @click.prevent="addMovieToSelection">
+            Ajouter Film
+          </button>
         </div>
 
-        <button type="submit">Ajouter</button>
+        <div class="container__button">
+          <button class="close" @click.prevent="isAddCategoryPopupOpen = false">
+            Fermer
+          </button>
+          <button class="submit" type="submit">Ajouter</button>
+        </div>
       </form>
-      <button @click="isAddCategoryPopupOpen = false">Fermer</button>
     </div>
   </div>
 
@@ -239,9 +317,6 @@ const submitCategoryForm = async () => {
             </option>
           </select>
         </div>
-        <button class="add__category" @click="openAddCategoryPopup">
-          Ajouter une catégorie
-        </button>
       </div>
 
       <div class="search-input">
@@ -261,6 +336,36 @@ const submitCategoryForm = async () => {
         :fetchMovies="fetchMovies"
         :deleteMovie="deleteMovie"
       />
+    </div>
+
+    <div class="container__add__button">
+      <button class="delete__movies" @click.prevent="openDeleteCategoryPopup">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 128 146"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M54.4433 0C44.4621 0 36.2956 8.1665 36.2956 18.1478H18.1478C8.1665 18.1478 0 26.3143 0 36.2956H127.034C127.034 26.3143 118.868 18.1478 108.887 18.1478H90.7389C90.7389 8.1665 82.5724 0 72.5911 0H54.4433ZM18.1478 54.4433V141.734C18.1478 143.73 19.5996 145.182 21.5959 145.182H105.62C107.616 145.182 109.068 143.73 109.068 141.734V54.4433H90.9204V117.961C90.9204 123.042 86.9279 127.034 81.8465 127.034C76.7651 127.034 72.7726 123.042 72.7726 117.961V54.4433H54.6248V117.961C54.6248 123.042 50.6323 127.034 45.5509 127.034C40.4696 127.034 36.477 123.042 36.477 117.961V54.4433H18.3293H18.1478Z"
+            fill="white"
+          />
+        </svg>
+
+        Supprimer une catégorie
+      </button>
+      <button class="add__movies" @click.prevent="openAddCategoryPopup">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" fill="#fff" />
+        </svg>
+        Ajouter une catégorie
+      </button>
     </div>
 
     <!-- pagination -->
@@ -283,7 +388,7 @@ const submitCategoryForm = async () => {
     </div>
   </div>
   <!-- pop up info -->
-  <PopupInfo />
+  <!-- <PopupInfo /> -->
   <!-- pop up edit -->
   <PopupEdit :movieData="movieData" />
 </template>
@@ -308,6 +413,20 @@ const submitCategoryForm = async () => {
     padding: 20px;
     max-width: 400px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ajouter__film {
+      width: 100%;
+      margin-bottom: 3vh;
+    }
 
     h2 {
       font-size: 1.5em;
@@ -315,52 +434,52 @@ const submitCategoryForm = async () => {
       margin-bottom: 20px;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    p {
+      font-size: 1.2em;
+      color: #333;
+      margin-bottom: 16px;
+    }
 
-      label {
-        font-size: 1.2em;
-        margin-bottom: 8px;
-        color: #333;
-      }
-
-      input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1em;
-      }
-
-      button {
-        background-color: #e50914;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1.2em;
-
-        &:hover {
-          background-color: #ff3b2f; // Rouge plus clair au survol
-        }
-      }
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      outline: none;
     }
 
     button {
-      background-color: transparent;
-      color: #333;
+      background-color: #e50914;
+      color: white;
+      padding: 10px 20px;
       border: none;
-      font-size: 1em;
+      width: 140px;
+      border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      font-size: 1.2em;
+      margin-right: 10px;
 
       &:hover {
-        text-decoration: underline;
+        background-color: #ff3b2f;
       }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .container__button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .submit {
+      background-color: #ff3b2f !important;
+    }
+    .close {
+      background-color: #5c5c5c !important;
     }
   }
 }
@@ -387,7 +506,6 @@ const submitCategoryForm = async () => {
     align-items: center;
     gap: 15px;
     color: var(--white);
-    margin-bottom: 10px;
     font-size: 1.5rem;
 
     .container__filtre__categories {
@@ -623,6 +741,73 @@ const submitCategoryForm = async () => {
 
       &:hover {
         background-color: #bd081c;
+      }
+    }
+  }
+
+  .container__add__button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    .delete__movies {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 15vw;
+      height: 8.5vw;
+      box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.084);
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.4s cubic-bezier(0.95, -0.01, 0.58, 1),
+        z-index 0s cubic-bezier(0.95, -0.01, 0.58, 1) 0.5s;
+      z-index: 10;
+      box-shadow: rgba(0, 0, 0, 0) 0px 3px 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--white);
+      background-color: #7979796f;
+      border: 3px solid #7979796f;
+      transition: all 0.2s cubic-bezier(0.42, 0, 0, 1.59);
+      gap: 10px;
+
+      &:hover {
+        background-color: #bd081c;
+        transform: scale(1.05);
+      }
+    }
+    .add__movies {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 15vw;
+      height: 8.5vw;
+      box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.084);
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.4s cubic-bezier(0.95, -0.01, 0.58, 1),
+        z-index 0s cubic-bezier(0.95, -0.01, 0.58, 1) 0.5s;
+      z-index: 10;
+      box-shadow: rgba(0, 0, 0, 0) 0px 3px 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--white);
+      background-color: #e509146f;
+      border: 3px solid #e50914;
+      transition: all 0.2s cubic-bezier(0.42, 0, 0, 1.59);
+      gap: 10px;
+
+      &:hover {
+        background-color: #bd081c;
+        transform: scale(1.05);
       }
     }
   }

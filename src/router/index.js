@@ -5,6 +5,9 @@ import Actor from "../views/Actor.vue";
 import Category from "../views/Category.vue";
 import Login from "../views/Login.vue";
 import Watch from "../views/Watch.vue";
+import MovieInformation from "../views/MovieInformation.vue";
+import CategoryInformation from "../views/CategoryInformation.vue";
+import ActorInformation from "../views/ActorInformation.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,6 +27,24 @@ const router = createRouter({
       path: "/movie",
       name: "Movie",
       component: Movie,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/movie-info/:id",
+      name: "MovieInformation",
+      component: MovieInformation,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/category-info/:id",
+      name: "CategoryInformation",
+      component: CategoryInformation,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/actor-info/:id",
+      name: "ActorInformation",
+      component: ActorInformation,
       meta: { requiresAuth: true },
     },
     {

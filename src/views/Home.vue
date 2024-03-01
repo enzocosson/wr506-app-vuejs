@@ -147,7 +147,7 @@ export default {
   <!-- catalogue -->
   <CatalogeComponant />
   <!-- pop up info -->
-  <PopupInfo />
+  <!-- <PopupInfo /> -->
   <!-- pop up edit -->
   <PopupEdit />
 

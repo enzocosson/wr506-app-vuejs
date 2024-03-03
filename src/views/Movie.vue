@@ -6,7 +6,7 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
 
 <template>
   <div class="movies">
-    <PopupInfo />
+    <!-- <PopupInfo /> -->
     <PopupEdit />
     <CatalogeMoviesComponant />
   </div>
@@ -20,12 +20,10 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
+  justify-content: flex-start;
   padding-bottom: 1vh;
   overflow: hidden;
   z-index: 1;
-  padding: 0 2rem;
 
   .mute__button {
     position: absolute;

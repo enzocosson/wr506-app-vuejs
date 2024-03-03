@@ -34,12 +34,12 @@ const fetchActors = async () => {
   }
 };
 
+
 onMounted(() => {
   fetchCategories();
   fetchActors();
 });
 </script>
-
 <script>
 import { mapMutations, mapState } from "vuex";
 
@@ -51,23 +51,24 @@ export default {
     },
   },
   data() {
-    return {
-      formData: {
-        title: "",
-        description: "",
-        poster: "",
-        classement: "",
-        trailer: "",
-        date: "",
-        duration: "",
-        category: null,
-        actors: [],
-      },
-      newActor: "",
-      selectedActor: null,
+  return {
+    formData: {
+      category: "",
       actors: [],
-    };
-  },
+      title: "",
+      releaseDate: "2024-01-24T07:45:13.979Z",
+      duration: 0,  
+      description: "",
+      trailer: "",
+      imageFile: null,
+    },
+    newActor: "",
+    selectedActor: null,
+  };
+},
+
+
+
 
   watch: {
     isPopupEdit(newVal) {
@@ -90,6 +91,11 @@ export default {
   },
   methods: {
     ...mapMutations(["togglePopupEdit"]),
+
+    
+    onFileChange(event) {
+      this.formData.imageFile = event.target.files[0];
+    },
     handleClick() {
       this.togglePopupEdit();
     },
@@ -105,40 +111,36 @@ export default {
         (actor) => `/api/actors/${actor.id}`
       );
 
+      const formData = new FormData();
+      formData.append("category", this.formData.category["@id"]);
+      formData.append("actors", JSON.stringify(actorUrls));
+      formData.append("title", this.formData.title);
+      formData.append("releaseDate", this.formData.date);
+      formData.append("duration", this.formData.duration);
+      formData.append("description", this.formData.description);
+      formData.append("trailer", this.formData.trailer);
+      formData.append("imageFile", this.formData.imageFile, "image.jpg");
+
       const url = `https://127.0.0.1:8000/api/movies/${movieId}`;
-      const data = {
-        category: this.formData.category["@id"],
-        actors: actorUrls,
-        title: this.formData.title,
-        releaseDate: this.formData.date,
-        duration: this.formData.duration,
-        description: this.formData.description,
-        poster: this.formData.poster,
-        posterPortrait: this.formData.posterPortrait,
-        classement: this.formData.classement,
-        trailer: this.formData.trailer,
-      };
       const token = localStorage.getItem("token");
       const headers = {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       };
 
-      fetch(url, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Requête PUT réussie:", data);
-          handleClick();
+      axios
+        .put(url, formData, { headers })
+        .then((response) => {
+          console.log("Success:", response.data);
+          this.togglePopupEdit();
         })
         .catch((error) => {
-          console.error("Erreur lors de la requête PUT:", error);
+          console.error("Error during PUT request:", error);
         });
     },
     addActor() {
+      console.log("formData", this.formData);
+      console.log("movieData", this.movieData);
       if (this.selectedActor) {
         if (
           !this.formData.actors.some(
@@ -189,7 +191,7 @@ export default {
             <img
               class="img__couverture"
               v-if="movieData"
-              :src="movieData.poster"
+              :src="movieData.imageName"
               alt=""
             />
 
@@ -214,23 +216,10 @@ export default {
             ></textarea>
 
             <input
-              v-model="formData.poster"
-              type="text"
-              class="poster"
-              placeholder="Poster"
-            />
-            <input
-              v-model="formData.posterPortrait"
-              type="text"
-              class="poster"
-              placeholder="Poster"
-            />
-
-            <input
-              v-model="formData.classement"
-              type="text"
-              class="classement"
-              placeholder="Classement"
+              type="file"
+              id="imageFile"
+              accept="image/*"
+              @change="onFileChange"
             />
 
             <input
@@ -276,7 +265,9 @@ export default {
                 <ul>
                   <li v-for="(actor, index) in formData.actors" :key="index">
                     {{ actor.firstName }} {{ actor.lastName }}
-                    <button @click="removeActor(index)">Supprimer</button>
+                    <button @click.prevent="removeActor(index)">
+                      Supprimer
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -296,7 +287,7 @@ export default {
                     {{ actor.firstName }}
                   </option>
                 </select>
-                <button @click="addActor">Ajouter Acteur</button>
+                <button @click.prevent="addActor">Ajouter Acteur</button>
               </div>
             </div>
             <div class="container__button">

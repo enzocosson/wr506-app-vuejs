@@ -1,6 +1,5 @@
 <script>
 import { mapMutations, mapState } from "vuex";
-import axios from "axios";
 
 export default {
   props: ["movie", "fetchMovies", "deleteMovie"],
@@ -32,11 +31,7 @@ export default {
       "clearDataMovieEdit",
       "addDataMovieEdit",
     ]),
-    redirectToMoviePage(event) {
-      if (event.target.tagName.toLowerCase() !== "button") {
-        this.$router.push({ name: "MovieInformation", params: { id: this.movie.id } });
-      }
-    },
+
     createMovieData(movie) {
       return {
         id: movie.id,
@@ -52,10 +47,8 @@ export default {
         date: movie.releaseDate,
         duration: movie.duration,
         description: movie.description,
-        poster: movie.poster,
-        posterPortrait: movie.posterPortrait,
-        classement: movie.classement,
         trailer: movie.trailer,
+        imageName: movie.imageName,
       };
     },
     handleClick() {
@@ -69,6 +62,17 @@ export default {
       this.clearDataMovieEdit();
       this.addDataMovieEdit(movieData);
       this.togglePopupEdit();
+      console.log(movieData);
+    },
+    redirectToMoviePage(event) {
+      if (event.target.tagName.toLowerCase() !== "button") {
+        this.$router.push({ name: "MovieInformation", params: { id: this.movie.id } });
+      }
+    },
+    redirectToMovieWatch(event) {
+      if (event.target.tagName.toLowerCase() !== "button") {
+        this.$router.push({ name: "Watch", params: { id: this.movie.id } });
+      }
     },
     async confirmDeleteMovie() {
     try {
@@ -93,7 +97,8 @@ export default {
       this.showDeleteConfirmation = false;
     },
   },
-  mounted() {},
+  mounted() {
+  },
 };
 </script>
 
@@ -110,20 +115,20 @@ export default {
     </div>
   </div>
   <div class="card" @click="redirectToMoviePage">
-    <img class="couverture__film" loading="lazy" :src="movie.poster" alt="" />
+    <img class="couverture__film" loading="lazy" :src="movie.imageName" alt="" />
     <div class="card__hover">
       <div class="container__poster">
         <img
           class="couverture__film__hover"
           loading="lazy"
-          :src="movie.poster"
+          :src="movie.imageName"
           alt=""
         />
       </div>
       <div class="container__info">
         <div class="interaction">
           <div class="feedback">
-            <button>
+            <button @click.stop="redirectToMovieWatch">
               <svg
                 width="24"
                 height="24"
@@ -168,27 +173,7 @@ export default {
                 />
               </svg>
             </button>
-          </div>
-          <button class="more__info" @click.stop="handleClick">
-            <svg
-              width="142"
-              height="142"
-              viewBox="0 0 142 142"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <mask id="path-1-inside-1_532_566" fill="white">
-                <path
-                  d="M71 0.289062L141.711 70.9997L71 141.71L0.289323 70.9997L71 0.289062Z"
-                />
-              </mask>
-              <path
-                d="M141.711 70.9997L155.853 85.1419L169.995 70.9997L155.853 56.8576L141.711 70.9997ZM56.8579 14.4312L127.569 85.1419L155.853 56.8576L85.1421 -13.8531L56.8579 14.4312ZM127.569 56.8576L56.8579 127.568L85.1421 155.853L155.853 85.1419L127.569 56.8576Z"
-                fill="var(--white)"
-                mask="url(#path-1-inside-1_532_566)"
-              />
-            </svg>
-          </button>
+          </div> 
         </div>
         <div class="information">
           <p class="recommandation">Recommandé à 97%</p>

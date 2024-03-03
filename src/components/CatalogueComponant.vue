@@ -9,15 +9,8 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
   <div class="container__catalogue">
     <div class="catalogue">
     <ThemeComponant />
-    <ThemeClassementComponant />
+    <!-- <ThemeClassementComponant /> -->
     <ThemeComponant />
-
-    <!-- <ThemeComponant />
-    <ThemeComponant />
-    <ThemeComponant />
-    <ThemeComponant />
-    <ThemeComponant />
-    <ThemeComponant /> -->
   </div>
   </div>
 </template>

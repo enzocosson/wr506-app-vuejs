@@ -113,7 +113,7 @@ const fetchMovie = async (id) => {
         margin-bottom: 3rem;
       }
       p {
-        font-size: 1.5vw;
+        font-size: 1vw;
         margin-bottom: 10px;
 
         a {

@@ -1,6 +1,9 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted, computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const apiUrl = "https://127.0.0.1:8000/api";
 const actorsData = ref([]);
@@ -65,7 +68,6 @@ const filterByTitle = () => {
     actor.firstName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 };
-
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -277,6 +279,10 @@ const addMovieToSelection = () => {
     }
   }
 };
+const navigateToActorPage = (id, router) => {
+  router.push({ name: "ActorInformation", params: { id } });
+};
+
 
 onMounted(() => {
   fetchMovies();
@@ -457,7 +463,7 @@ onMounted(() => {
     </div>
 
     <div class="container__card">
-      <div class="card__actor" v-for="actor in filteredActors" :key="actor.id">
+      <div class="card__actor" v-for="actor in filteredActors" :key="actor.id" @click="() => navigateToActorPage(actor.id, $router)">
         <img :src="actor.photo" :alt="'photo de ' + actor.firstName" />
         <div class="info">
           <h2>{{ actor.firstName }} {{ actor.lastName }}</h2>

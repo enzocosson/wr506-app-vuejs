@@ -47,7 +47,7 @@ const navigateToActor = (id, router) => {
   <div class="container__movie">
     <div v-if="movie" class="container__movie">
       <div class="movie__image">
-        <img :src="movie.poster" alt="Movie Poster" />
+        <img :src="movie.imageName" alt="Movie Poster" />
       </div>
       <div class="movie__information">
         <h1>{{ movie.title }}</h1>

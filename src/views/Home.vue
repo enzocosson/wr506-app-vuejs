@@ -2,7 +2,6 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import CatalogeComponant from "../components/CatalogueComponant.vue";
-import PopupInfo from "../components/PopupInfo.vue";
 import PopupEdit from "../components/PopupEdit.vue";
 
 // ----------------------------------------------------------
@@ -144,11 +143,7 @@ export default {
       <div class="rectangle">10+</div>
     </div>
   </div>
-  <!-- catalogue -->
   <CatalogeComponant />
-  <!-- pop up info -->
-  <!-- <PopupInfo /> -->
-  <!-- pop up edit -->
   <PopupEdit />
 
 </template>

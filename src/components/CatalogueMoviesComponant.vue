@@ -1,28 +1,25 @@
 <script setup>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
-import PopupInfo from "../components/PopupInfo.vue";
 import PopupEdit from "../components/PopupEdit.vue";
-
 const apiUrl = "https://127.0.0.1:8000/api";
 const actors = ref([]);
 const moviesData = ref([]);
 const categories = ref([]);
 const filteredMovies = ref([]);
 const searchQuery = ref("");
-const newMovie = ref({
+
+const newMovie = {
   category: "",
   actors: [],
   title: "",
   releaseDate: "2024-01-24T07:45:13.979Z",
   duration: 0,
   description: "",
-  poster: "",
-  posterPortrait: "",
-  classement: "",
+  imageFile: null,
   trailer: "",
-});
+};
 
 const token = localStorage.getItem("token");
 if (!token) {
@@ -70,6 +67,17 @@ const filterByTitle = () => {
   );
 };
 
+const shuffledMovies = computed(() => {
+  const shuffled = [...filteredMovies.value];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled;
+});
+
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value += 1;
@@ -113,11 +121,25 @@ const fetchActors = async () => {
 };
 
 const addMovie = async () => {
+  console.log(newMovie);
   try {
-    await axios.post(`${apiUrl}/movies`, newMovie.value, {
+    const formData = new FormData();
+    formData.append("category", newMovie.category);
+    formData.append(
+      "actors[0]",
+      newMovie.actors.length > 0 ? newMovie.actors[0] : ""
+    );
+    formData.append("title", newMovie.title);
+    formData.append("releaseDate", newMovie.releaseDate);
+    formData.append("duration", newMovie.duration);
+    formData.append("description", newMovie.description);
+    formData.append("trailer", newMovie.trailer);
+    formData.append("imageFile", newMovie.imageFile);
+
+    await axios.post(`${apiUrl}/movies`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -127,6 +149,19 @@ const addMovie = async () => {
   } catch (error) {
     console.error("Error adding movie", error);
   }
+};
+
+const resetForm = () => {
+  newMovie.value = {
+    category: "",
+    actors: [],
+    title: "",
+    releaseDate: "2024-01-24T07:45:13.979Z",
+    duration: 0,
+    description: "",
+    imageFile: null,
+    trailer: "",
+  };
 };
 
 const deleteMovie = async (movieId) => {
@@ -143,20 +178,12 @@ const deleteMovie = async (movieId) => {
   }
 };
 
-const resetForm = () => {
-  newMovie.value = {
-    category: "",
-    actors: [],
-    title: "",
-    releaseDate: "2024-01-24T07:45:13.979Z",
-    duration: 0,
-    description: "",
-    poster: "",
-    posterPortrait: "",
-    classement: "",
-    trailer: "",
-  };
+const onFileChange = (event) => {
+  const file = event.target.files[0];
+  newMovie.imageFile = file;
+  console.log(newMovie.imageFile);
 };
+
 
 onMounted(() => {
   fetchMovies();
@@ -171,7 +198,11 @@ onMounted(() => {
     <div class="popup__content">
       <h2>Ajouter un film</h2>
 
-      <form @submit.prevent="addMovie" class="netflix-form">
+      <form
+        @submit.prevent="addMovie"
+        class="netflix-form"
+        enctype="multipart/form-data"
+      >
         <div class="form-group">
           <label>Catégorie:</label>
           <select v-model="newMovie.category" required>
@@ -207,6 +238,16 @@ onMounted(() => {
         </div>
 
         <div class="form-group">
+          <label>Image de couverture :</label>
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            v-on:change="onFileChange"
+          />
+        </div>
+
+        <div class="form-group">
           <label>Date de sortie:</label>
           <input v-model="newMovie.releaseDate" type="datetime-local" />
         </div>
@@ -222,21 +263,6 @@ onMounted(() => {
         </div>
 
         <div class="form-group">
-          <label>Poster:</label>
-          <input v-model="newMovie.poster" type="text" required />
-        </div>
-
-        <div class="form-group">
-          <label>Poster Portrait:</label>
-          <input v-model="newMovie.posterPortrait" type="text" required />
-        </div>
-
-        <div class="form-group">
-          <label>Classement:</label>
-          <input v-model="newMovie.classement" type="text" required />
-        </div>
-
-        <div class="form-group">
           <label>Bande-annonce:</label>
           <input v-model="newMovie.trailer" type="text" required />
         </div>
@@ -245,7 +271,7 @@ onMounted(() => {
           <button class="cancel__button" @click.prevent="closeAddCategoryPopup">
             Annuler
           </button>
-          <button class="submit__button" type="submit">Modifier</button>
+          <button class="submit__button" type="submit">Ajouter</button>
         </div>
       </form>
     </div>
@@ -264,7 +290,7 @@ onMounted(() => {
       </div>
       <div class="movies">
         <CardMovieComponent
-          v-for="movie in filteredMovies"
+          v-for="movie in shuffledMovies"
           :key="movie.title"
           :movie="movie"
           :fetchMovies="fetchMovies"
@@ -307,9 +333,6 @@ onMounted(() => {
     </div>
   </div>
 
-  <!-- pop up info -->
-  <!-- <PopupInfo /> -->
-  <!-- pop up edit -->
   <PopupEdit :movieData="movieData" />
 </template>
 

@@ -31,4 +31,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           localDir: "./dist/"
-          remoteDir: "/home/mmi21g05/public_html/travaux/vue-js/"
+          remoteDir: "/home/mmi21e03/public_html/travaux/vue-js/"

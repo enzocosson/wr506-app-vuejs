@@ -36,7 +36,7 @@ onMounted(async () => {
       <div v-if="user" class="container__img">
         <img
           v-if="user.photo"
-          :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/image/${user.photo}`"
+          :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/image/${user.photo}`"
           alt="Photo de profil"
           class="profile__image"
         />

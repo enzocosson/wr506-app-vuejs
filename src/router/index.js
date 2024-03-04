@@ -9,6 +9,18 @@ import MovieInformation from "../views/MovieInformation.vue";
 import CategoryInformation from "../views/CategoryInformation.vue";
 import ActorInformation from "../views/ActorInformation.vue";
 
+router.beforeEach((to, from, next) => {
+  const token = localStorage.token;
+
+  if (to.path === "/" && !token) {
+    next("/login");
+  } else if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+    next("/login");
+  } else {
+    next();
+  }
+});
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -66,19 +78,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
   ],
-});
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const token = localStorage.token;
-    if (!token) {
-      next("/login");
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
 });
 
 export default router;

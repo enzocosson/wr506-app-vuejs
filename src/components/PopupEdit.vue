@@ -129,7 +129,7 @@ export default {
       };
 
       axios
-        .put(url, formData, { headers })
+        .patch(url, formData, { headers })
         .then((response) => {
           console.log("Success:", response.data);
           this.togglePopupEdit();

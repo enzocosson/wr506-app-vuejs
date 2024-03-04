@@ -5,9 +5,11 @@ import Actor from "../views/Actor.vue";
 import Category from "../views/Category.vue";
 import Login from "../views/Login.vue";
 import Watch from "../views/Watch.vue";
+import User from "../views/User.vue";
 import MovieInformation from "../views/MovieInformation.vue";
 import CategoryInformation from "../views/CategoryInformation.vue";
 import ActorInformation from "../views/ActorInformation.vue";
+import UpdateUser from "../views/UpdateUser.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -63,6 +65,18 @@ const router = createRouter({
       path: "/category",
       name: "Category",
       component: Category,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/user",
+      name: "User",
+      component: User,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/update-user/:id",
+      name: "UpdateUser",
+      component: UpdateUser,
       meta: { requiresAuth: true },
     },
   ],

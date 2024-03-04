@@ -220,6 +220,7 @@ export default {
               id="imageFile"
               accept="image/*"
               @change="onFileChange"
+              required
             />
 
             <input

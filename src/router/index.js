@@ -12,7 +12,7 @@ import ActorInformation from "../views/ActorInformation.vue";
 import UpdateUser from "../views/UpdateUser.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory("/vue-js/"),
   routes: [
     {
       path: "/login",

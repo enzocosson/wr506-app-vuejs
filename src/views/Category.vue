@@ -5,7 +5,7 @@ import CardMovieComponent from "../components/CardMovieComponant.vue";
 import PopupInfo from "../components/PopupInfo.vue";
 import PopupEdit from "../components/PopupEdit.vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const moviesPerPage = 30;
 
 const selectedCategory = ref("");

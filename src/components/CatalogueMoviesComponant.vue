@@ -3,7 +3,7 @@ import axios from "axios";
 import { ref, onMounted, computed } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
 import PopupEdit from "../components/PopupEdit.vue";
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const actors = ref([]);
 const moviesData = ref([]);
 const categories = ref([]);

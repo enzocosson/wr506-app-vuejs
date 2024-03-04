@@ -6,7 +6,7 @@ import PopupEdit from "../components/PopupEdit.vue";
 
 // ----------------------------------------------------------
 
-const apiUrl2 = "https://127.0.0.1:8000/api";
+const apiUrl2 = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const firstFourMovies2 = ref([]);
 
 const token = localStorage.getItem("token");

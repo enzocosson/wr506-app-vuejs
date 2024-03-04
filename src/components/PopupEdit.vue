@@ -8,7 +8,7 @@ const actors = ref([]);
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get("https://127.0.0.1:8000/api/categories", {
+    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/categories", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -22,7 +22,7 @@ const fetchCategories = async () => {
 
 const fetchActors = async () => {
   try {
-    const response = await axios.get("https://127.0.0.1:8000/api/actors", {
+    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/actors", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -121,7 +121,7 @@ export default {
       formData.append("trailer", this.formData.trailer);
       formData.append("imageFile", this.formData.imageFile, "image.jpg");
 
-      const url = `https://127.0.0.1:8000/api/movies/${movieId}`;
+      const url = `https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies/${movieId}`;
       const token = localStorage.getItem("token");
       const headers = {
         "Content-Type": "multipart/form-data",

@@ -8,7 +8,10 @@ let mail = ref("");
 let password = ref("");
 const router = useRouter();
 
+
+
 onMounted(() => {
+
   isTokenValid();
 });
 
@@ -19,8 +22,9 @@ const isTokenValid = () => {
 };
 
 const login = async () => {
+  console.log(import.meta.env);
   try {
-    const response = await axios.post("https://127.0.0.1:8000/auth", {
+    const response = await axios.post(`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/auth`, {
       email: mail.value,
       password: password.value,
     });

@@ -3,7 +3,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardMovieComponent from "./CardMovieComponant.vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const firstFourMovies = ref([]);
 
 const token = localStorage.getItem("token");

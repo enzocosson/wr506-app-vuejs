@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 
-const apiUrl = "https://mmi21e03.mmi-troyes.fr/travaux/wr506-symfony/public/index.php/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const actorsData = ref([]);
 const showDeleteConfirmation = ref(false);
 const selectedActor = ref(null);
@@ -85,7 +85,7 @@ const prevPage = () => {
 
 const fetchMovies = async () => {
   try {
-    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/travaux/wr506-symfony/public/index.php/api/movies", {
+    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -108,7 +108,7 @@ const filteredMovies = computed(() => {
 const fetchNationalites = async () => {
   try {
     const response = await axios.get(
-      "https://mmi21e03.mmi-troyes.fr/travaux/wr506-symfony/public/index.php/api/nationalites",
+      "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/nationalites",
       {
         headers: {
           Authorization: `Bearer ${token}`,

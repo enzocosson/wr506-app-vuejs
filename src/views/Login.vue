@@ -24,7 +24,7 @@ const isTokenValid = () => {
 const login = async () => {
   console.log(import.meta.env);
   try {
-    const response = await axios.post(`https://mmi21e03.mmi-troyes.fr/travaux/wr506-symfony/public/index.php/auth`, {
+    const response = await axios.post(`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/auth`, {
       email: mail.value,
       password: password.value,
     });

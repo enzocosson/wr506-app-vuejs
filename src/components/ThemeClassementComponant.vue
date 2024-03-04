@@ -3,7 +3,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import CardClassementMovieComponent from "./CardClassementMovieComponant.vue";
 
-const apiUrl = "https://127.0.0.1:8000/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const firstFourMovies = ref([]);
 
 // Récupérer le jeton d'authentification depuis le localstorage

@@ -46,6 +46,7 @@ const fetchMovies = async () => {
       params: {
         page: currentPage.value,
         itemsPerPage: moviesPerPage,
+        title: searchQuery.value,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -54,29 +55,18 @@ const fetchMovies = async () => {
     const movies = response.data["hydra:member"];
     totalMovies.value = response.data["hydra:totalItems"];
     moviesData.value = movies;
-
     totalPages.value = Math.ceil(totalMovies.value / moviesPerPage);
-
-    filterByTitle();
-  } catch (error) {}
-};
-
-const filterByTitle = () => {
-  filteredMovies.value = moviesData.value.filter((movie) =>
-    movie.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-};
-
-const shuffledMovies = computed(() => {
-  const shuffled = [...filteredMovies.value];
-
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  } catch (error) {
+    console.error("Erreur lors de la récupération des films", error);
   }
+};
 
-  return shuffled;
-});
+const handleSearchInput = () => {
+  if (searchQuery.value.trim() !== "" || searchQuery.value.trim() === "") {
+    fetchMovies();
+  }
+};
+
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -184,12 +174,10 @@ const onFileChange = (event) => {
   console.log(newMovie.imageFile);
 };
 
-
 onMounted(() => {
   fetchMovies();
   fetchCategories();
   fetchActors();
-  filterByTitle();
 });
 </script>
 
@@ -283,14 +271,14 @@ onMounted(() => {
         <div class="search-input">
           <input
             v-model="searchQuery"
-            @input="filterByTitle"
+            @input="handleSearchInput"
             placeholder="Rechercher par titre"
           />
         </div>
       </div>
       <div class="movies">
         <CardMovieComponent
-          v-for="movie in shuffledMovies"
+          v-for="movie in moviesData"
           :key="movie.title"
           :movie="movie"
           :fetchMovies="fetchMovies"

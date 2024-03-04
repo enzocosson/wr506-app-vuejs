@@ -39,6 +39,7 @@ const fetchActors = async () => {
       params: {
         page: currentPage.value,
         itemsPerPage: itemsPerPage,
+        firstName: searchQuery.value,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,17 +58,24 @@ const fetchActors = async () => {
       };
     });
 
-    filterByTitle();
+    // filterByTitle();
   } catch (error) {
     console.error("Erreur lors de la récupération des acteurs :", error);
   }
 };
 
-const filterByTitle = () => {
-  filteredActors.value = actorsData.value.filter((actor) =>
-    actor.firstName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+const handleSearchInput = () => {
+  const trimmedSearchQuery = searchQuery.value.trim();
+  if (trimmedSearchQuery !== "" || trimmedSearchQuery === "") {
+    fetchActors();
+  }
 };
+
+// const filterByTitle = () => {
+//   filteredActors.value = actorsData.value.filter((actor) =>
+//     actor.firstName.toLowerCase().includes(searchQuery.value.toLowerCase())
+//   );
+// };
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -85,11 +93,14 @@ const prevPage = () => {
 
 const fetchMovies = async () => {
   try {
-    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     moviesTable.value = response.data["hydra:member"];
   } catch (error) {
@@ -221,9 +232,9 @@ const addMovie = () => {
   }
 };
 
-const removeMovie = (index) => {
-  selectedMovies.value.splice(index, 1);
-};
+// const removeMovie = (index) => {
+//   selectedMovies.value.splice(index, 1);
+// };
 
 const newActor = ref({
   firstName: "",
@@ -283,12 +294,11 @@ const navigateToActorPage = (id, router) => {
   router.push({ name: "ActorInformation", params: { id } });
 };
 
-
 onMounted(() => {
   fetchMovies();
   fetchActors();
   fetchNationalites();
-  filterByTitle();
+  // filterByTitle();
 });
 </script>
 
@@ -386,8 +396,7 @@ onMounted(() => {
               id="editLastName"
             />
 
-            <!-- film section -->
-            <div class="container__actors__selection">
+            <!-- <div class="container__actors__selection">
               <div
                 class="container__actor__selected"
                 v-if="selectedMovies.length > 0"
@@ -421,9 +430,7 @@ onMounted(() => {
 
                 <button @click.prevent="addMovie">Ajouter Film</button>
               </div>
-            </div>
-
-            <!-- film section -->
+            </div> -->
 
             <label for="editNationalite">Nationalité :</label>
             <select v-model="selectedActor.nationalite" class="category">
@@ -456,14 +463,19 @@ onMounted(() => {
       <div class="search-input">
         <input
           v-model="searchQuery"
-          @input="filterByTitle"
-          placeholder="Rechercher par nom"
+          @input="handleSearchInput"
+          placeholder="Rechercher par Prénom"
         />
       </div>
     </div>
 
     <div class="container__card">
-      <div class="card__actor" v-for="actor in filteredActors" :key="actor.id" @click="() => navigateToActorPage(actor.id, $router)">
+      <div
+        class="card__actor"
+        v-for="actor in actorsData"
+        :key="actor.id"
+        @click="() => navigateToActorPage(actor.id, $router)"
+      >
         <img :src="actor.photo" :alt="'photo de ' + actor.firstName" />
         <div class="info">
           <h2>{{ actor.firstName }} {{ actor.lastName }}</h2>

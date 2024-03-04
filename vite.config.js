@@ -4,7 +4,7 @@ import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
 
 export default ({ mode }) => {
-  const base = mode === "production" ? "/travaux/vue-js/" : "./";
+  const base = mode === "production" ? "/vue-js/" : "./";
 
   return defineConfig({
     base,

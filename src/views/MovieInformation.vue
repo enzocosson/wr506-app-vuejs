@@ -91,6 +91,7 @@ const navigateToActor = (id, router) => {
 .container__movie {
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   padding: 20px;
   justify-content: center;
@@ -120,6 +121,7 @@ const navigateToActor = (id, router) => {
   }
 
   .movie__information {
+    width: 500px;
     display: flex;
     text-align: center;
     margin-top: 20px;
@@ -140,16 +142,17 @@ const navigateToActor = (id, router) => {
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       margin-bottom: 10px;
       color: var(--white);
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1rem;
       margin-bottom: 20px;
       color: var(--white);
       font-weight: 300;
+      text-align: justify;
 
       span {
         font-size: 1.1rem;
@@ -208,13 +211,13 @@ const navigateToActor = (id, router) => {
         justify-content: flex-start;
 
         h3 {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           margin-bottom: 5px;
           color: #f9f9f9;
         }
 
         p {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: #bdbdbd;
           margin-bottom: 0px;
         }

@@ -62,20 +62,6 @@ const router = useRouter();
           </button>
         </div>
       </div>
-      <img
-        class="img_couverture"
-        src="https://media.idownloadblog.com/wp-content/uploads/2014/12/interstellar-new-film-poster-art-nolan-9-wallpaper.jpg"
-        alt=""
-      />
-      <!-- <p><span>Catégorie: </span> {{ movie.category.name }}</p> -->
-      <!-- <p><span>Date de sortie: </span> {{ formatDate(movie.releaseDate) }}</p> -->
-      <!-- <p><span>Durée: </span> {{ movie.duration }} minutes</p> -->
-      <!-- <p><span>Acteurs: </span></p>
-    <ul>
-      <li v-for="actor in movie.actors" :key="actor">
-        {{ actor.firstName }} {{ actor.lastName }}
-      </li>
-    </ul> -->
     </div>
   </div>
 </template>

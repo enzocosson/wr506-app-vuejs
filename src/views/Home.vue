@@ -6,14 +6,15 @@ import PopupEdit from "../components/PopupEdit.vue";
 
 // ----------------------------------------------------------
 
-const apiUrl2 = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
+const apiUrl = "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api";
 const firstFourMovies2 = ref([]);
+const movieList = ref([]);
 
 const token = localStorage.getItem("token");
 
 const fetchMovies2 = async () => {
   try {
-    const response2 = await axios.get(`${apiUrl2}/movies`, {
+    const response2 = await axios.get(`${apiUrl}/movies`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -26,9 +27,26 @@ const fetchMovies2 = async () => {
   }
 };
 
-onMounted(() => {
-  fetchMovies2();
-});
+const randomMovie = async () => {
+  try {
+    const response = await axios.get(`${apiUrl}/movies`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const dataMovie = response.data["hydra:member"];
+
+    const randomIndex = Math.floor(Math.random() * dataMovie.length);
+    const selectedMovie = dataMovie[randomIndex];
+
+    // Vérifier si 'trailers' est défini avant de le trier
+
+    // Ajouter la propriété trailer à l'objet movieList avec un trailer choisi au hasard
+    movieList.value = [{ ...selectedMovie }];
+  } catch (error) {
+    console.error("Erreur lors de la récupération des films :", error);
+  }
+};
 
 const isSoundOn = ref(true);
 
@@ -36,6 +54,21 @@ const toggleSound = () => {
   isSoundOn.value = !isSoundOn.value;
 };
 
+const startVideo = () => {
+  const iframe = document.querySelector(".container__player iframe");
+  if (iframe) {
+    iframe.contentWindow.postMessage(
+      '{"event":"command","func":"playVideo","args":""}',
+      "*"
+    );
+  }
+};
+
+onMounted(() => {
+  fetchMovies2();
+  randomMovie();
+  startVideo();
+});
 </script>
 
 <script>
@@ -48,34 +81,38 @@ export default {
     ...mapState(["isPopupOpen"]),
   },
   methods: {
-  ...mapMutations(["togglePopup"]),
+    ...mapMutations(["togglePopup"]),
 
-  handleClick() {
-    this.togglePopup();
+    handleClick() {
+      this.togglePopup();
+    },
   },
-}
 };
 </script>
 
 <template>
   <div class="home">
-    <img
-      class="img_couverture"
-      src="https://media.idownloadblog.com/wp-content/uploads/2014/12/interstellar-new-film-poster-art-nolan-9-wallpaper.jpg"
-      alt=""
-    />
     <!-- video -->
     <video autoplay muted loop class="ba_couverture">
-      <source src="/videos/spiderman-trailer.mp4" type="video/mp4" />
+      <source src="/videos/intro.mp4" type="video/mp4" />
     </video>
 
-    <div class="info" v-for="movies2 in firstFourMovies2" :key="movies2.title">
-      <h3 class="title">Spider-man : Homecoming</h3>
-      <p class="description">
-        <span>Description: </span>Peter Parker reprend la routine au lycée
-        jusqu'à l'arrivée du Vautour qui lui donne l'occasion de faire ses
-        preuves grâce à ses super-pouvoirs d'homme-araignée.
-      </p>
+    <!-- <div class="container__player">
+      <iframe
+        v-if="movieList[0] && movieList[0].trailer"
+        width="100%"
+        height="100%"
+        :src="`${movieList[0].trailer}?autoplay=0`"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        @loadedmetadata="startVideo"
+      ></iframe>
+    </div> -->
+
+    <div class="info" v-for="movie in movieList" :key="movie.title">
+      <h3 class="title">{{ movie.title }}</h3>
+      <p class="description">{{ movie.description }}</p>
       <div class="buttons" @click="redirectToMoviePage">
         <button class="lecture">
           <img class="icon" src="/icons/play.svg" alt="" />
@@ -145,7 +182,6 @@ export default {
   </div>
   <CatalogeComponant />
   <PopupEdit />
-
 </template>
 
 <style scoped lang="scss">
@@ -161,6 +197,18 @@ export default {
   padding-bottom: 1vh;
   overflow: hidden;
   z-index: 1;
+
+  .container__player {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 0;
+    background-color: var(--black);
+  }
 
   .mute__button {
     position: absolute;
@@ -227,6 +275,17 @@ export default {
     left: 0;
     z-index: -1;
     display: none;
+  }
+
+  .container__player {
+    width: 100%;
+    height: 140%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
   }
   .ba_couverture {
     width: 100%;
@@ -457,7 +516,6 @@ export default {
 
 @media (max-width: 950px) {
   .home {
-    
     .mute__button {
       display: none;
     }

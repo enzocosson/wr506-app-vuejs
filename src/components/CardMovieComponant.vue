@@ -15,7 +15,7 @@ export default {
       }
     },
   },
-  
+
   data() {
     return {
       showDeleteConfirmation: false,
@@ -66,7 +66,10 @@ export default {
     },
     redirectToMoviePage(event) {
       if (event.target.tagName.toLowerCase() !== "button") {
-        this.$router.push({ name: "MovieInformation", params: { id: this.movie.id } });
+        this.$router.push({
+          name: "MovieInformation",
+          params: { id: this.movie.id },
+        });
       }
     },
     redirectToMovieWatch(event) {
@@ -75,20 +78,20 @@ export default {
       }
     },
     async confirmDeleteMovie() {
-    try {
-      const token = localStorage.getItem("token");
+      try {
+        const token = localStorage.getItem("token");
 
-      if (!token) {
-        console.error("Token is missing");
-        return;
+        if (!token) {
+          console.error("Token is missing");
+          return;
+        }
+
+        await this.deleteMovie(this.movie.id);
+        this.closeDeleteConfirmation();
+      } catch (error) {
+        console.error("Error deleting movie", error);
       }
-
-      await this.deleteMovie(this.movie.id);
-      this.closeDeleteConfirmation();
-    } catch (error) {
-      console.error("Error deleting movie", error);
-    }
-  },
+    },
 
     openDeleteConfirmation() {
       this.showDeleteConfirmation = true;
@@ -97,8 +100,7 @@ export default {
       this.showDeleteConfirmation = false;
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
@@ -115,7 +117,12 @@ export default {
     </div>
   </div>
   <div class="card" @click="redirectToMoviePage">
-    <img class="couverture__film" loading="lazy" :src="movie.imageName" alt="" />
+    <img
+      class="couverture__film"
+      loading="lazy"
+      :src="movie.imageName"
+      alt=""
+    />
     <div class="card__hover">
       <div class="container__poster">
         <img
@@ -173,7 +180,7 @@ export default {
                 />
               </svg>
             </button>
-          </div> 
+          </div>
         </div>
         <div class="information">
           <p class="recommandation">Recommandé à 97%</p>
@@ -457,6 +464,157 @@ export default {
     transition: transform 0.3s cubic-bezier(0.95, -0.01, 0.58, 1) 0.3s,
       opacity 0.3s cubic-bezier(0.95, -0.01, 0.58, 1) 0.3s;
     box-shadow: rgba(0, 0, 0, 0.46) 0px 3px 8px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .card {
+    width: 20.5vw;
+    height: 11.875vw;
+  }
+}
+
+@media (max-width: 850px) {
+  .card {
+    width: 29.5vw;
+    height: 16.875vw;
+
+    .card__hover {
+      .container__poster {
+        width: 24vw;
+        height: 13.5vw;
+      }
+      .container__info {
+        .interaction {
+          button {
+            width: 2.5vw;
+            height: 2.5vw;
+            svg {
+              width: 1.25vw;
+              height: 1.25vw;
+            }
+          }
+        }
+        .information {
+          .recommandation {
+            font-size: 1.25vw;
+          }
+          .age {
+            font-size: 1vw;
+            padding: 0.25vw 0.5vw;
+          }
+          .duree {
+            font-size: 1.25vw;
+          }
+          .resolution {
+            font-size: 1vw;
+            padding: 0vw 0.5vw;
+          }
+        }
+        .tilte {
+          font-size: 1.25vw;
+        }
+        .genre {
+          font-size: 1.25vw;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 34.5vw;
+    height: 19.875vw;
+
+    .card__hover{
+      .container__poster {
+        width: 29vw;
+        height: 16.5vw;
+      }
+      .container__info {
+        .interaction {
+          button {
+            width: 3vw;
+            height: 3vw;
+            svg {
+              width: 1.5vw;
+              height: 1.5vw;
+            }
+          }
+        }
+        .information {
+          .recommandation {
+            font-size: 1.5vw;
+          }
+          .age {
+            font-size: 1.25vw;
+            padding: 0.25vw 0.5vw;
+          }
+          .duree {
+            font-size: 1.5vw;
+          }
+          .resolution {
+            font-size: 1.25vw;
+            padding: 0vw 0.5vw;
+          }
+        }
+        .tilte {
+          font-size: 1.5vw;
+        }
+        .genre {
+          font-size: 1.5vw;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 497px){
+  .card {
+    width: 73vw;
+    height: 41vw;
+
+    .card__hover{
+      .container__poster {
+        width: 73vw;
+    height: 41vw;
+      }
+      .container__info {
+        .interaction {
+          button {
+            width: 8vw;
+            height: 8vw;
+            svg {
+              width: 4vw;
+              height: 4vw;
+            }
+          }
+        }
+        .information {
+          .recommandation {
+            font-size: 4vw;
+          }
+          .age {
+            font-size: 3vw;
+            padding: 0.5vw 1vw;
+          }
+          .duree {
+            font-size: 4vw;
+          }
+          .resolution {
+            font-size: 3vw;
+            padding: 0vw 1vw;
+          }
+        }
+        .tilte {
+          font-size: 4vw;
+        }
+        .genre {
+          font-size: 4vw;
+        }
+      }
+    }
   }
 }
 </style>

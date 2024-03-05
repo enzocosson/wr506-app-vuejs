@@ -51,9 +51,6 @@ onMounted(() => {
   fetchMovies();
 });
 
-
-
-
 // ----------------------------------------------------------
 
 const moviesLeft = ref(0);
@@ -77,9 +74,6 @@ const moveLeft = () => {
     document.querySelector(".movies").classList.add("show-before");
   }
 };
-
-
-
 </script>
 
 <template>
@@ -160,8 +154,7 @@ const moveLeft = () => {
   z-index: 1;
 
   & > div:nth-child(2) > .slider__movies > div:nth-child(1) {
-    margin-left: 2.5vw !important; 
-  
+    margin-left: 2.5vw !important;
   }
 
   .container__title__presentation {
@@ -226,7 +219,7 @@ const moveLeft = () => {
       justify-content: flex-start;
       align-items: center;
       transition: 0.5s ease-in-out;
-      height: 8.5vw;
+      height: auto;
       margin-left: 2.5vw;
     }
 
@@ -279,6 +272,24 @@ const moveLeft = () => {
     &:before {
       display: block;
     }
+  }
+}
+
+@media (max-width: 1000px) {
+  .theme .container__title__presentation .title__presentation {
+    font-size: 2vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .theme .container__title__presentation .title__presentation {
+    font-size: 3vw;
+  }
+}
+
+@media (max-width: 498px) {
+  .theme .container__title__presentation .title__presentation {
+    font-size: 4vw;
   }
 }
 </style>

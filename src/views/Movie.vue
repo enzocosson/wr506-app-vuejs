@@ -315,4 +315,27 @@ import CatalogeMoviesComponant from "../components/CatalogueMoviesComponant.vue"
     }
   }
 }
+
+@media (max-width: 768px) {
+  .home {
+    .info {
+      width: 95%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      z-index: 1;
+      gap: 20px;
+
+      h3 {
+        position: relative;
+        right: 0.5vw;
+        color: var(--white);
+        font-size: 6vw;
+        font-weight: bold;
+      }
+    }
+  }
+}
 </style>

@@ -452,4 +452,83 @@ export default {
     }
   }
 }
+
+// responsive
+
+@media (max-width: 950px) {
+  .home {
+    
+    .mute__button {
+      display: none;
+    }
+    .info {
+      h3 {
+        font-size: 6vw;
+      }
+      .description {
+        width: 80%;
+        font-size: 1.8vw;
+      }
+      .buttons {
+        .lecture {
+          width: 200px;
+          font-size: 1.5rem;
+        }
+        .plus_info {
+          width: 250px;
+          font-size: 1.5rem;
+        }
+      }
+    }
+    .presentation {
+      .container__title__presentation {
+        .title__presentation {
+          font-size: 2.5vw;
+        }
+        .explorer {
+          font-size: 1.5vw;
+          img {
+            width: 1.5vw;
+            height: 1.5vw;
+          }
+        }
+      }
+      .movies {
+        .slider__movies {
+          height: 12vw;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    .info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 11rem;
+      h3 {
+        font-size: 2rem;
+        text-align: center;
+      }
+      .description {
+        font-size: 1.2rem;
+        text-align: justify;
+        width: 100%;
+      }
+      .buttons {
+        .lecture {
+          width: 140px;
+          font-size: 1.3rem;
+        }
+        .plus_info {
+          width: 150px;
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
+}
 </style>

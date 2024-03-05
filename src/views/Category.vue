@@ -812,4 +812,137 @@ const cancelDeleteCategory = () => {
     }
   }
 }
+
+@media (max-width: 1000px) {
+  .category {
+    padding: 3rem 1rem;
+    padding-top: 13vh;
+
+    .category__header {
+      flex-direction: column;
+      gap: 20px;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .container__filtre__categories {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0;
+      }
+
+      .search-input {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  }
+  .container__add__button {
+    flex-direction: column;
+    gap: 1rem;
+
+    .delete__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+    .add__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+  }
+  .pagination {
+    margin: 40px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .category {
+    padding: 3rem 1rem;
+    padding-top: 13vh;
+
+    .category__header {
+      flex-direction: column;
+      gap: 20px;
+
+      .container__filtre__categories {
+        width: 100%;
+        justify-content: space-between;
+
+        .delete__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+    .add__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+      }
+
+      .search-input {
+        width: 100%;
+      }
+    }
+    .movies {
+      justify-content: center;
+    }
+  }
+
+  .container__add__button {
+    flex-direction: row;
+    gap: 1rem;
+
+    .delete__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+
+    .add__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+  }
+  .pagination {
+    margin: 40px 0;
+  }
+}
+
+@media (max-width: 460px) {
+  .category {
+    padding: 3rem 1rem;
+    padding-top: 13vh;
+
+    .category__header {
+      flex-direction: column;
+      gap: 20px;
+
+      h2 {
+        font-size: 1.2rem;
+      }
+      .container__filtre__categories {
+        width: 100%;
+        justify-content: space-between;
+        .delete__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+    .add__movies {
+      width: 18vw;
+      height: 10.5vw;
+    }
+      }
+
+      .search-input {
+        width: 100%;
+      }
+    }
+  }
+  .container__add__button {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .pagination {
+    margin: 40px 0;
+  }
+}
 </style>

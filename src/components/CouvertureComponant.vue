@@ -199,4 +199,27 @@ const router = useRouter();
     background: linear-gradient(to top, var(--black) 17%, transparent 100%);
   }
 }
+
+@media (max-width: 768px) {
+  .couverture {
+    .info {
+      h3 {
+        font-size: 20vw;
+      }
+      .description {
+        font-size: 3vw;
+      }
+      .buttons {
+        .lecture {
+          width: 100px;
+          font-size: 1.3rem;
+        }
+        .plus_info {
+          width: 150px;
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
+}
 </style>

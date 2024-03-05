@@ -93,14 +93,11 @@ const prevPage = () => {
 
 const fetchMovies = async () => {
   try {
-    const response = await axios.get(
-      "https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get("https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/api/movies", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     moviesTable.value = response.data["hydra:member"];
   } catch (error) {
@@ -1335,6 +1332,144 @@ onMounted(() => {
   .pagination-button:hover:not(:disabled) {
     background-color: #ff3f4d;
     transform: scale(1.05);
+  }
+}
+
+.container__add__button {
+  .add__movies {
+    width: 13vw;
+    height: 7vw;
+  }
+}
+
+@media (max-width: 1100px) {
+  .actor {
+    .container__card {
+      .card__actor {
+        width: 19.2vw;
+        height: 29vw;
+
+        .info {
+          h2 {
+            font-size: 1.5vw;
+          }
+          .nationalite {
+            font-size: 1.2vw;
+          }
+        }
+      }
+    }
+  }
+}
+
+.container__add__button {
+  .add__movies {
+    width: 18vw;
+    height: 13vw;
+  }
+}
+
+@media (max-width: 860px) {
+  .actor {
+    .container__card {
+      .card__actor {
+        width: 24.2vw;
+        height: 34vw;
+
+        .info {
+          h2 {
+            font-size: 1.8vw;
+          }
+          .nationalite {
+            font-size: 1.5vw;
+          }
+        }
+      }
+    }
+    .category__header {
+      width: 100%;
+      .search-input {
+        width: 100%;
+        input {
+          padding: 10px;
+          border: 1px solid #333;
+          border-radius: 5px;
+          font-size: 16px;
+          outline: none;
+          width: 100%;
+          background-color: rgba(0, 0, 0, 0.8);
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.container__add__button {
+  .add__movies {
+    width: 14vw;
+    height: 8vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .actor {
+    .container__card {
+      .card__actor {
+        width: 100%;
+        height: 40vw;
+
+        .info {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          h2 {
+            font-size: 2.5vw;
+          }
+          .nationalite {
+            font-size: 2vw;
+          }
+
+          .container__button__info {
+            button {
+              width: 6.3vw;
+              height: 6.3vw;
+            }
+          }
+        }
+      }
+    }
+  }
+  .container__add__button {
+    .add__movies {
+      width: 50%;
+      height: 26vw;
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .actor {
+    .container__card {
+      .card__actor {
+        .info {
+          h2 {
+            font-size: 3vw;
+          }
+          .nationalite {
+            font-size: 2.5vw;
+          }
+
+          .container__button__info {
+            button {
+              width: 6.3vw;
+              height: 6.3vw;
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>

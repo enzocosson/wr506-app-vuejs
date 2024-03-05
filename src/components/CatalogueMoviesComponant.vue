@@ -67,7 +67,6 @@ const handleSearchInput = () => {
   }
 };
 
-
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value += 1;
@@ -738,6 +737,48 @@ onMounted(() => {
           background-color: #bd081c;
           transform: scale(1.05);
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .catalogue {
+    .theme {
+      align-items: center;
+
+      .category__header {
+        width: 100%;
+
+        .search-input {
+          width: 100%;
+        }
+      }
+
+      .movies {
+        width: 90%;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .container__add__button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .add__movies {
+          width: 35vw;
+          height: 23.5vw;
+        }
+      }
+    }
+    .pagination {
+      margin: 20px 0;
+
+      .pagination-button {
+        width: 100px;
+        height: 40px;
       }
     }
   }

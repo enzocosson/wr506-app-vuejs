@@ -9,8 +9,6 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
   <div class="container__catalogue">
     <div class="catalogue">
     <ThemeComponant />
-    <!-- <ThemeClassementComponant /> -->
-    <ThemeComponant />
   </div>
   </div>
 </template>
@@ -56,4 +54,14 @@ import ThemeClassementComponant from "../components/ThemeClassementComponant.vue
   }
 }
 }
+
+// @media (max-width: 768px) {
+//   .container__catalogue {
+//     top: 60%;
+//     .catalogue {
+//       padding-top: 0vh;
+//       padding-bottom: 0vh;
+//     }
+//   }
+// }
 </style>

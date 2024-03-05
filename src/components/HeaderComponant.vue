@@ -92,7 +92,7 @@ const toggleMobileMenu = () => {
           <img
             v-if="user"
             class="photo__profil"
-            :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/image/${user.photo}`"
+            :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/image/${user.photo}`"
             alt=""
           />
         </div>
@@ -106,7 +106,7 @@ const toggleMobileMenu = () => {
                 <img
                   v-if="user"
                   class="photo__profil"
-                  :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/index.php/image/${user.photo}`"
+                  :src="`https://mmi21e03.mmi-troyes.fr/wr506-symfony/public/image/${user.photo}`"
                   alt=""
                 />
               </div>

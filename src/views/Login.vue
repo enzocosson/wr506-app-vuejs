@@ -286,4 +286,45 @@ const login = async () => {
   justify-content: center;
   gap: 0.5rem;
 }
+
+
+@media (max-width: 768px) {
+  .login {
+    .form {
+      padding: 2rem;
+      gap: 0.5rem;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+      .send__button {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+      .container__memoire {
+        .seSouvenir {
+          p {
+            font-size: 0.7rem;
+          }
+        }
+        .help {
+          font-size: 0.7rem;
+        }
+      }
+      .inscription {
+        font-size: 0.8rem;
+      }
+      .captcha {
+        font-size: 0.6rem;
+      }
+    }
+  }
+}
 </style>
